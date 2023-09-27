@@ -80,3 +80,5 @@
 
 #### initcode.S
   - nacita cislo systemoveho volania exec(SYS_EXEC) do registra a7 a potom zavola ecall
+
+### kapitola 3
