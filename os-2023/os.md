@@ -31,6 +31,18 @@
 - Aplikacia beziacia v userspace moze vykonavat iba user mode instrukcie
 - software beziaci v kernel space moze vykonavat privilegovane instrukcie
 
+#### Kniznicny pristup
+  - nevyhodou je ze ak je spustenych viac ako jedna aplikacia tak aplikacie musia byt spravne spravovane
+  - aplikacia sa musi pravidelne vzdat cpu
+
+#### monoliticke jadro
+  - vsetky aplikacie bezia v privilegovanom
+
+#### mikrokernel
+  - co najmenej aplikacii v privilegovanom rezime
+  - aplikacie sa spustaju v user mode
+  - na pouzivanie privilegovanych instrukcii sa pouzivaju servery
+
 #### Proces
   - je jednotkou izolacie
   - Abstrakcia procesu bráni jednému procesu v zničení alebo špehovaní pamäte iného procesu, CPU, deskriptorov súborov
@@ -50,7 +62,10 @@
   - xv6 používa iba 38 z týchto 39 bitov
 
 #### Tramopoline
-  - 
+  - zabezpecuje prechod do jadra a spat
+
+#### trapframe
+  - sluzi na ulozenie a obnovenie stavu pouzivatelskeho procesu
 
 #### MAXVA
   - maximalna adresa 2^28 -1 = 0x3fffffffff
@@ -58,7 +73,8 @@
 #### ECALL
   - vykonava prechod z neprivilegovaneho modu do privilegovaneho
   - systemove volanie v a7
-  - argumenty v 
+  - argumenty v a0 a a1
+  - vstupuje do jadra v jadrom specifikovanom vstupnom bode
 
 #### Entry
   - hovori kde sa zacne vykonavat programovy kod
@@ -80,3 +96,6 @@
 
 #### initcode.S
   - nacita cislo systemoveho volania exec(SYS_EXEC) do registra a7 a potom zavola ecall
+
+#### Syscall 
+  - nacita cislo systemoveho volania z registra a7 v trapframe pouziva ho na indexovanie do systemovych volani
