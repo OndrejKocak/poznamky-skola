@@ -108,3 +108,5 @@
 
 #### copyinstr
   kopiruje max pocet bajtov do dst z virtualnej adresy srcva
+
+### Kapitola 3
