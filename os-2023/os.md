@@ -36,11 +36,12 @@
   - aplikacia sa musi pravidelne vzdat cpu
 
 #### monoliticke jadro
-  - vsetky aplikacie bezia v privilegovanom
+  - vsetky systemove volania bezia v privilegovanom
+  - os bezi s plnymi hardverovymi  privilegiami
 
 #### mikrokernel
-  - co najmenej aplikacii v privilegovanom rezime
-  - aplikacie sa spustaju v user mode
+  - co najmenej kodu v privilegovanom rezime
+  - kod sa spustaju v user mode
   - na pouzivanie privilegovanych instrukcii sa pouzivaju servery
 
 #### Proces
@@ -72,9 +73,11 @@
   
 #### ECALL
   - vykonava prechod z neprivilegovaneho modu do privilegovaneho
+  - zvyšuje úroveň privilégií hardvéru a mení počítadlo programu na vstupný bod definovaný jadrom
   - systemove volanie v a7
   - argumenty v a0 a a1
   - vstupuje do jadra v jadrom specifikovanom vstupnom bode
+  - navratova hodnota syscallu sa ulozi do a0
 
 #### Entry
   - hovori kde sa zacne vykonavat programovy kod
@@ -99,3 +102,9 @@
 
 #### Syscall 
   - nacita cislo systemoveho volania z registra a7 v trapframe pouziva ho na indexovanie do systemovych volani
+
+#### argint, argaddr, argfd
+  - ziskavaju n-ty argumenent systemoveho volania z ramca trap ako cele cislo, pointer alebo fd
+
+#### copyinstr
+  kopiruje max pocet bajtov do dst z virtualnej adresy srcva
