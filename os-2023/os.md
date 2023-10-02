@@ -110,3 +110,45 @@
   kopiruje max pocet bajtov do dst z virtualnej adresy srcva
 
 ### Kapitola 3
+
+#### xv6
+- umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
+- mapovanie rovnakej pamate(stranky trampoline) v niekolkych adresnych priestoroch
+- strazenie zasobnikov jadra a pouzivatelov pomocou nezmapovanej stranky
+- Sv39 RISC V (pouziva iba spodnych 39 bitov 64-bitovej virtualnej adresy)
+- 2^27 page table entries(PTEs)
+- velkost page table je 4096(2^12) bajtov
+
+#### Tabulky stranok(page tables)
+- mechanizmus ktorym os poskytuje kazdemu procesu vlastny sukromny adresny priestor a pamat
+- urcuju co znamenaju pamatove adresy(memory adresses)
+- ku ktorym castiam fyzickej pamate je mozne pristupovat
+- dava os kontrolu nad prekladmi virtualnych adries na fyzicku 
+
+#### RISC V
+- instrukcie(user aj kernel) manipuluju s virtualnymi adresami
+- mapuje virtualne adresy na fyzicku adresu
+  
+
+#### Page table entry (PTE)
+- kazde PTE obsahuje 44-bitove cislo fyzickej stranky(PPN) a niektore priznaky
+- priestor na rast 10 bitov
+- kazde PTE obsahuje flag bits ktore informuju strankovaci hardver ako je povolene pouzivat virtualnu adresu
+  - PTE_V indikuje ci je PTE je pritomne
+  - PTE_R riadi ci mozu instrukcie citat zo stranky
+  - PTE_W riadi ci mozu instrukcie zapisovat do stranky
+  - PTE_X 
+
+
+#### Preklad na fyzicku adresu v troch krokoch
+  - Page table je ulozena vo fyzickej pamati ako troj-urovnovy strom
+    - koren stromu je tabulka stranok s velkostou 4096bajtov
+    - kazda stranka tabulky stranok obsahuje 512 PTE
+    - PTEs obsahuju fyzicke adresy pre stranky tabulky stranko v dalsej urovni stromu
+  - hardver strankovania
+    - hornych 9 bitov z 27 bitov vyber PTE
+    - prostrednych 9 bitov vyber PTE na stranke tabulky stranok
+    - spodnych 9 bitov vyber konecneho PTE
+  - ak niektory z troch PTE pozadovanych na preklad nieje pritomny strankovaci hardver vyvola page-fault exception
+  - nevyhodou je ze CPU musi nacitat 3 PTE z pamate aby vykonal preklad virtualnej adresy v nacitancej/ukladanadacej instrukcii do fyzickej adresy
+  - aby sa predislo nacitavaniu PTE z pamate CPU uklada PTEs do cache Translation Look-aside Buffer(TLB)
