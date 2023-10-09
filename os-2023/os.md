@@ -137,7 +137,8 @@
   - PTE_V indikuje ci je PTE je pritomne
   - PTE_R riadi ci mozu instrukcie citat zo stranky
   - PTE_W riadi ci mozu instrukcie zapisovat do stranky
-  - PTE_X 
+  - PTE_X riadi ci cpu moze interpretovat obsah stranky ako instrukcie a vykonat ich
+  - PTE_U riadi ci maju instrukcie(v usermode) pristup ku stranke
 
 
 #### Preklad na fyzicku adresu v troch krokoch
@@ -152,3 +153,68 @@
   - ak niektory z troch PTE pozadovanych na preklad nieje pritomny strankovaci hardver vyvola page-fault exception
   - nevyhodou je ze CPU musi nacitat 3 PTE z pamate aby vykonal preklad virtualnej adresy v nacitancej/ukladanadacej instrukcii do fyzickej adresy
   - aby sa predislo nacitavaniu PTE z pamate CPU uklada PTEs do cache Translation Look-aside Buffer(TLB)
+
+#### treba dokoncit
+
+
+### Kapitola 4
+
+#### Pasce a systemove volania(traps and syscalls)
+- tri druhy udalosti ktore sposobia ze CPU odloží bežné vykonávanie inštrukcií a vynúti prenos kontroly na špeciálny kód, ktory udalost spracuje
+  - systemove volanie
+  - instrukcia ktora robi nieco nepovolene(je jedno ci kernel alebo user)
+  - prerusenie zariadenia(ked zariadenie signalizuje ze potrebuje pozornost)
+
+#### Pasca (trap)
+- akýkoľvek kód spustený v čase pasce sa bude musieť neskôr obnoviť a nemal by si byť vedomý toho, že sa stalo niečo zvláštne
+- chceme aby boli transparentne(dolezite hlavne pre prerusenia zariadenia)
+- postupnost
+  - pasca vynúti prenos kontroly do jadra
+  - jadro ukladá registre a iný stav, aby bolo možné obnoviť vykonávanie
+  - jadro vykoná príslušný kód obsluhy 
+  - jadro obnoví uložený stav a vráti sa z pasce
+  - povodny kod pokracuje tam kde skoncil
+- vsetky pasce sa vykonavaju v jadre
+- kod ktory spracova pascu sa nazyva handler
+- spracovanie pasce v xv6 prebieha v 4 fazach:
+  -   hardvérové akcie vykonávané procesorom RISCV 
+  -   niektoré pokyny na zostavenie, ktoré pripravujú cestu pre kód C jadra 
+  -   funkcia C, ktorá rozhoduje,čo robiť s pascou
+  -   systémové volanie alebo ovládač zariadenia
+
+#### Strojove zariadenie pasce RISC V
+- kazdy RISC V ma sadu riadiacich registrov
+  - jadro do nich zapisuje aby povedalo CPU ako zaobchadzat s pascami
+  - jadro ich moze citat aby zistilo ktora pasca sa vyskytla
+  - riscv.h obsahuje definicie
+- najdolezitejsie registre:
+  - stvec 
+    - Jadro sem zapíše adresu svojho obslužného programu pasce
+    - RISC-V skoci na adresu v stvec aby handlol trap
+    - musi mat platne mapovanie v user page table
+  - sepc
+    - Keď sa vyskytne trap, RISC-V sem uloží počítadlo programu (keďže pc sa potom prepíše hodnotou v stvec). 
+    - Inštrukcia sret (návrat z pasce) skopíruje sepc do počítača. 
+    - Jadro môže zapisovať sepc, aby kontrolovalo, kam ide sret.
+  - scause
+    - RISC-V tu uvádza číslo, ktoré popisuje dôvod pasce
+  - sscratch
+    - Kód obsluhy pasce používa sscratch, aby zabránil prepísaniu užívateľských registrov
+  - sstatus
+    - Bit SIE v sstatus riadi, či sú povolené prerušenia zariadenia. 
+    - Ak jadro vymaže SIE, RISC-V odloží prerušenia zariadenia, kým jadro nenastaví SIE. 
+    - Bit SPP udáva, či pasca prišla z užívateľského režimu alebo z režimu supervízora, a riadi, do ktorého režimu sa vráti príkaz sret.
+- ked CPU potrebuje vynutit trap hardver urobi nasledovne pre vsetky typy pasci okrem prerusenia casovacom:
+  1. Ak je pasca prerušením zariadenia a bit sstatus SIE je čistý, nevykonávaj nasledujúce.
+  2. Zakážte prerušenia vymazaním bitu SIE v sstatus.
+  3. Skopírujte pc(program counter) do sepc
+  4. Ulož aktuálny režim (používateľ alebo supervízor) do bitu SPP v sstatus
+  5. Nastav scause tak, aby odrážal príčinu pasce.
+  6. Nastavte režim na privilegovany
+  7. Skopírujte stvec do pc
+  8. Začni vykonavat od noveho pc
+
+#### Pasce v uzivatelskom priestore
+- pasca sa moze vyskytnut ak program zavola syscall a urobi nieco ilegalne alebo ak ho zariadenie prerusi
+- uservec
+  - 
