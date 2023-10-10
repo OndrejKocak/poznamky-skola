@@ -215,7 +215,9 @@
   8. Začni vykonavat od noveho pc
 
 #### Pasce(vynimky) v uzivatelskom priestore
-- pasca sa moze vyskytnut ak program zavola syscall a urobi nieco ilegalne alebo ak ho zariadenie prerusi
+- pasca sa moze vyskytnut ak:
+  -  program zavola syscall a urobi nieco ilegalne 
+  -  ak ho zariadenie prerusi
 - stranka trampoline
   - namapovana v tabulke stranok kazdeho procesu na adrese **TRAMPOLINE**(vo virtualnom adresnom priestore uplne na vrchu)
   - namapovana v tabulke stranok jadra na adrese **TRAMPOLINE**
@@ -252,3 +254,23 @@
   - trap syscallom usertrap zavola **syscall** aby to spracoval
   - device interupt tak **devintr**
   - inak je to exception a kernel killne chybny proces
+- cesta syscallu prida k PC 4(lebo by stale ukazoval na ecall a nastal by nekonecny cyklus)
+- na ceste von:
+  - kontroluje ci bol proces zabity alebo mal poskytnut CPU(ak je trap timer interupt)
+  1. zavola **usertrapret**
+
+
+#### Usertrapret
+- nastavuje riadiace registre na pripravu na buducu trap z userspace
+- to zahrna:
+  - zmenu **stvec** na **uservec** 
+  - prípravu polí **trapframe**, na ktoré sa **uservec** spolieha 
+  - nastavenie **sepc** na predtým uložené **user PC**
+- na konci zavola **userret** na stranke trampilny(ta je mapovana v user page aj kernel page)
+  - pretoze **userret** prepne tabuky stranok
+  - odovzda pointer na user page table procesu do a0
+  - prepne **satp** na adresu user page table procesu
+  - nacita **TRAFRAME** do a0
+  - obnovi user registre pomocou a0
+  - obnovi ulozeny user obsah registra a0
+  - vykona **sret**
