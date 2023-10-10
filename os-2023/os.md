@@ -119,7 +119,7 @@
 - 2^27 page table entries(PTEs)
 - velkost page table je 4096(2^12) bajtov
 
-#### Tabulky stranok(page tables)
+#### Tabulky stranok(page tables PT)
 - mechanizmus ktorym os poskytuje kazdemu procesu vlastny sukromny adresny priestor a pamat
 - urcuju co znamenaju pamatove adresy(memory adresses)
 - ku ktorym castiam fyzickej pamate je mozne pristupovat
@@ -214,7 +214,41 @@
   7. Skopírujte stvec do pc
   8. Začni vykonavat od noveho pc
 
-#### Pasce v uzivatelskom priestore
+#### Pasce(vynimky) v uzivatelskom priestore
 - pasca sa moze vyskytnut ak program zavola syscall a urobi nieco ilegalne alebo ak ho zariadenie prerusi
-- uservec
-  - 
+- stranka trampoline
+  - namapovana v tabulke stranok kazdeho procesu na adrese **TRAMPOLINE**(vo virtualnom adresnom priestore uplne na vrchu)
+  - namapovana v tabulke stranok jadra na adrese **TRAMPOLINE**
+  - uservec
+    - instrukcia na zaciatku (csrw) ulozi a0 do sscratch
+    - ulozi vsetky uzivatelske registre(je ich 32) do **trapframe** vratane uzivatelskeho a0
+    - nacita adresu **TRAPFRAME** do a0
+    - kod na obsluhu pasce je v trampoline.S
+    - ziska hodnoty z **trapframe** a prepne satp na PT jadra a zavola **usertrap**
+- xv6 neprepina tabulky stranok ked vynuti trap
+- high-level path trapu z userspace:
+  1. uservec
+  2. usertrap
+  3. usertrapret
+  4. userret
+#### Trapframe
+- trapframe kazdeho procesu sa mapuje sa na adresu **TRAPFRAME**(tesne pod **TRAMPOLINE**)(v priestore uzivatelskych adries)
+- p->trapframe tiez ukazuje na trapframe(ale fyzicku ale moze ho vyuzit jadro cez PT jadra)
+- obsahuje:
+  - adresu zasobnika jadra aktualneho procesu
+  - hartid aktualneho CPU
+  - adresu funkcie usertrap
+  - adresu tabulky stranok jadra
+
+#### Usertrap
+- jeho ulohou je:
+  1. urcit pricinu pasce
+  2. spracovat ju
+  3. return
+
+- najprv zmeni stvec tak ze pascu v jadre bude skor riesit **kerneltrap** ako **usertrap**
+- ulozi register **sepc**
+- ak nastane:
+  - trap syscallom usertrap zavola **syscall** aby to spracoval
+  - device interupt tak **devintr**
+  - inak je to exception a kernel killne chybny proces
