@@ -210,7 +210,8 @@
 
 #### Pasce(vynimky) v user space
   - pasca sa moze vyskytnut ak:
-    -  program zavola syscall a urobi nieco ilegalne 
+    -  program zavola syscall 
+    -  urobi nieco ilegalne 
     -  ak ho zariadenie prerusi
   - stranka trampoline
     - namapovana v tabulke stranok kazdeho procesu na adrese **TRAMPOLINE**(vo virtualnom adresnom priestore uplne na vrchu)
