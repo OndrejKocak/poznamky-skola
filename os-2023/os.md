@@ -278,7 +278,7 @@
   - nacita cislo systemoveho volania z registra a7 v trapframe pouziva ho na indexovanie do systemovych volani
 
 #### argint, argaddr, argfd
-  - ziskavaju n-ty argumenent systemoveho volania z ramca trap ako cele cislo, pointer alebo fd
+  - ziskavaju n-ty argumenent systemoveho volania z **trapframe** ako cele cislo, pointer alebo fd
 
 #### Exec
   - pouziva fetchstr na získanie argumentov názvu súboru reťazca z užívateľského priestoru
