@@ -188,7 +188,7 @@
       - musi mat platne mapovanie v user page table
     - sepc
       - Keď sa vyskytne trap, RISC-V sem uloží počítadlo programu (keďže pc sa potom prepíše hodnotou v stvec). 
-      - Inštrukcia sret (návrat z pasce) skopíruje sepc do počítača. 
+      - Inštrukcia sret (návrat z pasce) skopíruje sepc do PC. 
       - Jadro môže zapisovať sepc, aby kontrolovalo, kam ide sret.
     - scause
       - RISC-V tu uvádza číslo, ktoré popisuje dôvod pasce
