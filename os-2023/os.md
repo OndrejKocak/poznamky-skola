@@ -320,8 +320,8 @@
   - ak trap nieje device interupt ide o **excetion a to je vzdy fatal error**
     - kernel **vyvola paniku a prestane vykonavat**
 
-  - ak bol zavolany kvoli timer interuptu tak poskytne ostatnym jadram sancu bezat
-    - v urcitom case sa niektore jadro podvoli a nechaju nase vlakno a jeho kerneltrap sa obnovit
+  - ak bol zavolany kvoli timer interuptu tak poskytne ostatnym vlaknam sancu bezat
+    - v urcitom case sa niektore vlakno podvoli a nechaju nase vlakno a jeho kerneltrap sa obnovit
   - ked sa vykonavanie kerneltrap dokonci vrati sa ku kodu ktory trap prerusila
     - obnovi riadiace registre a vrati sa do kernelvec
     - potom kernelvec vyberie ulozene registre zo stacku a zavola sret ten skopiruje sepc do PC a obnovi preruseny kod
