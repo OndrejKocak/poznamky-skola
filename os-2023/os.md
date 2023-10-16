@@ -329,3 +329,66 @@
 #### navrat z trapu ak bol vyvolany timer interuptom
 - xv6 nastavi stvec na kernelvec
 - Existuje časové okno, keď sa jadro začalo vykonávať, ale stvec je stále nastavený na uservec a je dôležité, aby počas tohto okna nenastalo žiadne prerušenie zariadenia. Našťastie RISC-V vždy deaktivuje prerušenia, keď začne zachytávať pascu, a xv6 ich znova povolí, kým nenastaví stvec.
+
+### Kapitola 4.6
+
+#### Reakcia xv6 na vynimky
+  - v user mode
+    - jadro zabije proces kde chyba nastala
+  - v kernel mode
+    - jadro panikari
+
+#### Copy-on-write (COW) fork
+  - rodic aj dieta mozu zdielat fyzicku pamat vhodnym pozivanim vhodnych povoleni tabulky stranok a chyb stranok
+  - COW je transparentna (niesu treba zmeny v aplikacii aby z COW benefitovali)
+  -  CPU vyvolá výnimku chyby stránky, keď sa pouzije virtualna adresa ktora:
+     - nema ziadne mapovanie v PT
+     - ma mapovanie ktoreho priznak **PTE_V** je prazdny
+     - mapovanie ktoreho bity **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
+  - rodič a dieťa budú spočiatku zdieľať všetky fyzické stránky, ale pre každého ich bude mapovať iba na čítanie (s jasným príznakom **PTE_W**)
+  - ak niektory z nich zapise danu stranku risc v vyvola vynimku page fault
+    - Obsluha pasce jadra odpovedá pridelením novej stránky fyzickej pamäte a skopírovaním fyzickej stránky, na ktorú sa mapuje chybná adresa
+    - Jadro zmení príslušné PTE v tabuľke stránok chybujúceho procesu tak, aby ukazovalo na kópiu a umožňovalo zapisovanie aj čítanie
+    - potom obnoví chybný proces podľa inštrukcie, ktorá spôsobila chybu
+    - Pretože PTE umožňuje zápis, opätovne vykonaná inštrukcia sa teraz vykoná bez chyby.
+  - vyžaduje vedenie zanamov, ktoré pomôžu rozhodnúť, kedy môžu byť fyzické stránky uvoľnené, pretože na každú stránku môže odkazovať rôzny počet tabuliek stránok v závislosti od histórie rozvetvení, chýb stránok, execov a výstupov
+  - vedenie zaznamov umoznuje optimalizaciu : ak sa v procese vyskytne **store page fault** a na fyzickú stránku sa odkazuje iba z tabuľky stránok tohto procesu, nie je potrebná žiadna kópia.
+  - COW urychluje fork pretoze nemusi kopirovat pamat(iba ked sa nieco zapise musi kopirovat)
+#### Chyby stranok
+  - **load page fault**(keď inštrukcia načítania nemôže preložiť svoju virtuálnu adresu)
+  - **store page fault**(keď inštrukcia uloženia nemôže preložiť svoju virtuálnu adresu)
+  - **instruction page fault**(keď adresa v počítadlo programu neprekladá)
+
+  - register **scause** oznacuje typ chyby a **sval** obsahuje adresu ktoru nebolo mozne prelozit
+
+#### Lazy alocation
+  -  jadro nemusí robiť vôbec žiadnu prácu pre stránky, ktoré aplikácia nikdy nepoužíva
+  -  ak aplikácia požaduje veľké rozšírenie adresného priestoru, tak sbrk je bez lazy alocation drahý
+  -  umoznuje rozlozit naklady v case
+  -  spôsobuje ďalšiu réžiu chýb stránok, ktoré zahŕňajú prechod medzi kernelom a userom
+     -  **OS** môže znížiť tieto náklady pridelením dávky po sebe nasledujúcich stránok na chybu stránky namiesto jednej stránky a špecializáciou vstupného/výstupného kódu jadra pre takéto chyby stránky 
+
+#### Demand paging
+  - Na zlepšenie času odozvy moderné jadro vytvára tabuľku stránok pre priestor užívateľských adries, ale označuje PTE pre stránky ako neplatné. 
+  - Pri chybe stránky jadro načíta obsah stránky z disku a namapuje ho do priestoru adries používateľa. 
+  - Podobne ako COW fork a lenivá alokácia môže jadro implementovať túto funkciu transparentne do aplikácií.
+
+#### Paging to disk
+  - ak prokgram ktory bezi potrebuj viac pamate ako ma pocitac RAM
+  - Myšlienkou je uložiť iba zlomok používateľských stránok do pamäte RAM a zvyšok uložiť na disk v **paging area**
+  - kernel oznaci priznaky PTE ktore oznacuju pamat ulozenu v **paging** area ako neplatnu
+  - ak sa aplikacia pokusi pouzit stranku ktora bola **paged out** na disk tak sa vyvola **page fault** a stranka musi byt **paged in** do RAM
+    - kernel trap handler alokuje fyzicku stranku pamate RAM
+    - nacita stranku z disku do RAM
+    - upravi prislusny PTE aby ukazoval na RAM
+  - ak je treba nacitat stranku z disku do RAM ale nieje dostatok RAM:
+    - jadro musi najprv uvolnit fyzicku pamat bud pomocou **paging out** alebo ju evictuje do **paging area** na disku a oznaci PTE ukazujuce na tuto pamat za neplatne
+    - eviction je drahe takze strankovanie usiluje o to aby ho bolo treba robit co najmanej
+  - dobra refernecna lokalita:
+    - ak aplikácie používajú iba podmnožinu svojich pamäťových stránok a spojenie podmnožín sa zmestí do pamäte RAM
+  - pocitace casto operuju s malou alebo ziadnou volnou fyzickou pamatou(bez ohladu na to kolko je hardverovej RAM)
+
+- Lazy alocation a paging to disk je velmi vyhodne ak je nedostatok volnej pamate
+
+####  automatically extending stacks and memory-mapped files
+  - dalsia funkcionalita ktora kombinuje vynimky strankovania a chyby stranok
