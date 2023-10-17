@@ -339,12 +339,8 @@
     - jadro panikari
 
 #### Copy-on-write (COW) fork
-  - rodic aj dieta mozu zdielat fyzicku pamat vhodnym pozivanim vhodnych povoleni tabulky stranok a chyb stranok
+  - rodic aj dieta mozu zdielat fyzicku pamat vhodnym pouzivanim vhodnych povoleni tabulky stranok a chyb stranok
   - COW je transparentna (niesu treba zmeny v aplikacii aby z COW benefitovali)
-  -  CPU vyvolá výnimku chyby stránky, keď sa pouzije virtualna adresa ktora:
-     - nema ziadne mapovanie v PT
-     - ma mapovanie ktoreho priznak **PTE_V** je prazdny
-     - mapovanie ktoreho bity **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
   - rodič a dieťa budú spočiatku zdieľať všetky fyzické stránky, ale pre každého ich bude mapovať iba na čítanie (s jasným príznakom **PTE_W**)
   - ak niektory z nich zapise danu stranku risc v vyvola vynimku page fault
     - Obsluha pasce jadra odpovedá pridelením novej stránky fyzickej pamäte a skopírovaním fyzickej stránky, na ktorú sa mapuje chybná adresa
@@ -354,12 +350,17 @@
   - vyžaduje vedenie zanamov, ktoré pomôžu rozhodnúť, kedy môžu byť fyzické stránky uvoľnené, pretože na každú stránku môže odkazovať rôzny počet tabuliek stránok v závislosti od histórie rozvetvení, chýb stránok, execov a výstupov
   - vedenie zaznamov umoznuje optimalizaciu : ak sa v procese vyskytne **store page fault** a na fyzickú stránku sa odkazuje iba z tabuľky stránok tohto procesu, nie je potrebná žiadna kópia.
   - COW urychluje fork pretoze nemusi kopirovat pamat(iba ked sa nieco zapise musi kopirovat)
+  
 #### Chyby stranok
   - **load page fault**(keď inštrukcia načítania nemôže preložiť svoju virtuálnu adresu)
   - **store page fault**(keď inštrukcia uloženia nemôže preložiť svoju virtuálnu adresu)
-  - **instruction page fault**(keď adresa v počítadlo programu neprekladá)
+  - **instruction page fault**(keď sa adresa v počítadle programu neprekladá)
 
   - register **scause** oznacuje typ chyby a **sval** obsahuje adresu ktoru nebolo mozne prelozit
+  - CPU vyvolá výnimku chyby stránky, keď sa pouzije virtualna adresa ktora:
+    - nema ziadne mapovanie v PT
+    - ma mapovanie ktoreho priznak **PTE_V** je prazdny
+    - mapovanie ktoreho bity **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
 
 #### Lazy alocation
   -  jadro nemusí robiť vôbec žiadnu prácu pre stránky, ktoré aplikácia nikdy nepoužíva
