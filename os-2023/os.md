@@ -354,15 +354,16 @@
 #### Chyby stranok
   - **load page fault**(keď inštrukcia načítania nemôže preložiť svoju virtuálnu adresu)
   - **store page fault**(keď inštrukcia uloženia nemôže preložiť svoju virtuálnu adresu)
-  - **instruction page fault**(keď sa adresa v počítadle programu neprekladá)
+  - **instruction page fault**(keď sa adresa v počítadle programu nemoze prelozit)
 
   - register **scause** oznacuje typ chyby a **sval** obsahuje adresu ktoru nebolo mozne prelozit
   - CPU vyvolá výnimku chyby stránky, keď sa pouzije virtualna adresa ktora:
     - nema ziadne mapovanie v PT
     - ma mapovanie ktoreho priznak **PTE_V** je prazdny
-    - mapovanie ktoreho bity **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
+    - mapovanie ktoreho bity priznakov **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
 
 #### Lazy alocation
+  -  alokuje pamat az ked ju aplkacia potrebuje
   -  jadro nemusí robiť vôbec žiadnu prácu pre stránky, ktoré aplikácia nikdy nepoužíva
   -  ak aplikácia požaduje veľké rozšírenie adresného priestoru, tak sbrk je bez lazy alocation drahý
   -  umoznuje rozlozit naklady v case
@@ -375,7 +376,7 @@
   - Podobne ako COW fork a lenivá alokácia môže jadro implementovať túto funkciu transparentne do aplikácií.
 
 #### Paging to disk
-  - ak prokgram ktory bezi potrebuj viac pamate ako ma pocitac RAM
+  - ak program ktory bezi potrebuje viac pamate ako ma pocitac RAM
   - Myšlienkou je uložiť iba zlomok používateľských stránok do pamäte RAM a zvyšok uložiť na disk v **paging area**
   - kernel oznaci priznaky PTE ktore oznacuju pamat ulozenu v **paging** area ako neplatnu
   - ak sa aplikacia pokusi pouzit stranku ktora bola **paged out** na disk tak sa vyvola **page fault** a stranka musi byt **paged in** do RAM
@@ -383,8 +384,8 @@
     - nacita stranku z disku do RAM
     - upravi prislusny PTE aby ukazoval na RAM
   - ak je treba nacitat stranku z disku do RAM ale nieje dostatok RAM:
-    - jadro musi najprv uvolnit fyzicku pamat bud pomocou **paging out** alebo ju evictuje do **paging area** na disku a oznaci PTE ukazujuce na tuto pamat za neplatne
-    - eviction je drahe takze strankovanie usiluje o to aby ho bolo treba robit co najmanej
+    - jadro musi najprv uvolnit fyzicku pamat bud pomocou **paging out** alebo ju odlozi do **paging area** na disku a oznaci PTE ukazujuce na tuto pamat za neplatne
+    - odlozenie je drahe takze strankovanie usiluje o to aby ho bolo treba robit co najmanej
   - dobra refernecna lokalita:
     - ak aplikácie používajú iba podmnožinu svojich pamäťových stránok a spojenie podmnožín sa zmestí do pamäte RAM
   - pocitace casto operuju s malou alebo ziadnou volnou fyzickou pamatou(bez ohladu na to kolko je hardverovej RAM)
@@ -393,3 +394,11 @@
 
 ####  automatically extending stacks and memory-mapped files
   - dalsia funkcionalita ktora kombinuje vynimky strankovania a chyby stranok
+
+#### Terminologia z prednasky:
+  - Exception (výnimka)
+    - výnimočný stav vyvolaný inštrukciou vykonávaného programu
+  - Trap (presun riadenia)
+    -  synchrónny prenos riadenia do kódu obsluhy spôsobený výnimočným stavom, ktorý zapríčinil vykonávaný program
+  - Interrupt (prerušenie)
+    - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
