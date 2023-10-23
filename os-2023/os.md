@@ -425,6 +425,8 @@
   - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
   - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
   - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu p->proc, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
+  - struktura sheduling kodu set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
+  - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze c->proc)
 
 #### swtch
   - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
@@ -451,3 +453,43 @@
   - swtch vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
   - scheduler pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
+
+#### mycpu() myproc()
+  - xv6 uchovava **struct cpu** pre kazde CPU, ta zaznamenava:
+    -  aktualne beziaci proces na danom CPU, 
+    -  ulozene registre scheduler threadu
+    -  pocet nested spinlockov potrebnych na riadenie deaktivacie interuptov
+  - xv6 prideluje kazdemu cpu **hartid**(kazdy hartid je ulozeny v **tp** registry daneho CPU pokial je v jadre)
+  - **start** nastavuje **tp** v zaciatkoch bootovania(v machine mode)
+  - **usertrapret** uklada tp v PT trampoliny
+  - **uservec** obnovuje tp ked vstupuje do kernelu z user space
+  - kompilator garantuje ze nikdy nepouzije tp
+
+#### mycpu()
+  - vracia pointer na **struct cpu** daneho CPU
+  - pouziva **tp** aby indexovalo **array of struct cpu**
+  - xv6 vyzaduje aby volajuci vypol interupty a zapol ich az po dokonceni prace so **struct cpu**
+
+#### myproc()
+  - vracia pointer na **struct proc** aktualneho procesu ktory bezi na danom CPU
+  - vypne prerusenia vyvola **mycpu()**, spracuje aktualny process pointer(c->proc) zo **struct cpu**, zapne prerusenia
+  - vracana hodnota je bezpecne pouzitelna aj ked su interupts povolene
+
+#### Sleep and wakeup
+  - casto nazyvane **sequence coordination** alebo **conditional synchronization mechanisms**
+  - scheduling a locks pomahaju skryt akcie jedneho vlakna pred druhym
+  - spanok umožňuje vláknu jadra čakať na konkrétnu udalosť
+  - iné vlákno môže zavolať prebudenie, aby naznačilo, že vlákna čakajúce na udalosť by sa mali obnoviť
+  - mozu ako wait channel pouzit akekolvek im vyhovujuce cislo(Xv6 často používa adresu dátovej štruktúry jadra zapojenej do čakania)
+  - spiaci proces drzi bud condition lock alebo p->lock alebo obidva(predtym ako je vyhodnotena podmienka a je oznaceny za **SLEEPING**)
+
+#### sleep
+  - sleep oznaci aktualny proces ako **SLEEPING** a potom zavola **shed** aby sa vzdal CPU
+  - drzi **p->lock** a pusti ho az ked je proces **SLEEPING**
+
+#### wakeup
+  - hlada spiaci proces na danom wait channely a oznaci ho za **RUNNABLE**
+  - V určitom bode proces získa stavový zámok, nastaví stav, na ktorý spánok čaká, a zavolá wakeup(chan).
+  - je dolezite aby sa **wakeup volal ked je condition lock v drzani**
+  - prechadza cez procesy v tabulke procesov ziskava p->lock daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**
+  - v loope drzi conditional lock aj p->lock
