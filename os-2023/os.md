@@ -317,7 +317,7 @@
     - exception
   - pri spusteni ulozi sepc a predchadzjuci rezim v sstatus
   - vola **devintr** aby checkol a popripade hadlol device iterupt
-  - ak trap nieje device interupt ide o **excetion a to je vzdy fatal error**
+  - ak trap nieje device interupt ide o **exception a to je vzdy fatal error**
     - kernel **vyvola paniku a prestane vykonavat**
 
   - ak bol zavolany kvoli timer interuptu tak poskytne ostatnym vlaknam sancu bezat
