@@ -402,3 +402,52 @@
     -  synchrónny prenos riadenia do kódu obsluhy spôsobený výnimočným stavom, ktorý zapríčinil vykonávaný program
   - Interrupt (prerušenie)
     - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
+
+### Kapitola 7
+
+#### Multiplexing
+  - Vytvara iluziu ze kazdy proces ma svoje CPU
+
+#### Sleep and wakeup
+  - umoznuje procesu vzdat sa CPU a cakat kym ho zobudi iny proces alebo prerusenie
+
+#### Context switching
+  - Prepnutie z jedného vlákna do druhého zahŕňa uloženie registrov CPU starého vlákna a obnovenie predtým uložených registrov nového vlákna(CPU prepne zásobníky a prepne, aký kód vykonáva)
+
+
+#### Scheduler(Planovac)
+  - ma vyhradene vlakno(ulozene registre a stack) pretoze nieje bezpecne aby sa scheduler vykonal na stacku stareho procesu
+  - existuje vo forme specialneho jadra(na ktorom bezi scheduler) pre kazde CPU
+  - existuje jeden pripad ked volanie swtch z schedulera nekonci v sched:
+    - **allocproc** nastavi contextovy register **ra** na adresu **forkret** takze prvy swtch sa vrati na adresu tej funkcie
+    - **forkret** existuje aby uvolnil **p->lock**
+    - novy proces sa musi vratit do user space ako keby sa vracal z forku a namiesto toho moze zacat usertrapret
+  - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
+  - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
+  - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu p->proc, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
+
+#### swtch
+  - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
+  - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(struct context) a vratil sa ku contextu scheduleru
+  - dva argumenty
+    - struct context *old
+    - struct context *new
+  - ulozi aktualne registre v old a nacita nove z new
+  - uklada iba callee-saved registre
+  - pozna offset kazdeho registra zo struct context
+  - neuklada program counter namiesto neho uklada ra register ktory obsahuje navratovu adresu z ktorej bol swtch volany
+
+#### Code: Scheduling
+  - proces ktory sa chce vzdat CPU musi: 
+    - ziskat vlastny process lock **p->lock**(kontrola locku sa prenasa na switchnuty proces)
+    - uvolnit vsetky ostatne zamky
+    - updatnut svoj state (p->state)
+    - a potom zavolat **sched**
+  - kedze je proces zamknuty(p->lock) prerusenia by mali byt vypnute
+  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yeild nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
+
+#### sched
+  - vola swtch aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
+  - swtch vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
+  - scheduler pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
+  - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
