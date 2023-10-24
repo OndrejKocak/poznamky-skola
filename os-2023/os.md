@@ -550,6 +550,7 @@
 
 #### kod: wait, exit, kill
   - exit prevedie volajuceho do **ZOMBIE** state dokial si to rodicov wait nevsimne a zmeni state childu na **UNUSED** skopiruje childov exit status a vrati rodicovi pid childu
+  - exit umožňuje, aby sa proces sám ukončil, zabitie nechá jeden proces požiadať o ukončenie iného
   
 #### exit
   - zaznamenava exit status, 
@@ -557,8 +558,8 @@
   - vola **reparent** aby dalo child **init procesu**, 
   - zobudi rodica ak je vo wait, nastavi status volajuceho na **ZOMBIE**
   - trvalo odvzdava CPU
-  - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vydiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
-  - ak rodic exitne skorek ako child tak da child **init procesu** (aby mal kazdy child nad sebou proces ktory ponom 'poupratuje')
+  - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vidiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
+  - ak rodic exitne skorej ako child tak da child **init procesu** (aby mal kazdy child nad sebou proces ktory ponom 'poupratuje')
 
 #### wait
   - zacina ziskanim **wait_lock**
@@ -581,12 +582,12 @@
 
 #### p->lock
   - najkomplexnejsi zamok v xv6
-  - musí byt drzany čítaní alebo zapisovani ktoréhokoľvek z nasledujúcich polí struct proc : **p->state, p->chan, p->killed, p->xstate a p ->pid**
+  - musí byt drzany pri čítaní alebo zapisovani ktoréhokoľvek z nasledujúcich polí struct proc : **p->state, p->chan, p->killed, p->xstate a p ->pid**
   - Väčšina použití **p->lock** však chráni aspekty vyššej úrovne štruktúry procesných údajov xv6 a algoritmy
   - veci ktore robi **p->lock**
     - s p->state zabranuje pretekom pri prideľovaní proc[] slotov pre nové procesy
     - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí
-    - zabranuje rodicovskemu wait aby collectol proces ktory je v state **ZOMBIE** predtym ako sa vdal CPU
+    - zabranuje rodicovskemu wait, aby collectol proces, ktory je v state **ZOMBIE** predtym ako sa vzdal CPU
     - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
     - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy
     -  Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
