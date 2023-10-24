@@ -1,4 +1,4 @@
-## OS Poznamky
+# OS Poznamky
 
 ### Obsah
  - [Kapitola 1](os.md#prednaska-1)
@@ -467,7 +467,7 @@
   - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
   - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
   - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu p->proc, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
-  - struktura sheduling kodu set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
+  - struktura sheduling kodu, set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
   - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze c->proc)
 
 #### swtch
@@ -479,7 +479,7 @@
   - ulozi aktualne registre v old a nacita nove z new
   - uklada iba callee-saved registre
   - pozna offset kazdeho registra zo struct context
-  - neuklada program counter namiesto neho uklada ra register ktory obsahuje navratovu adresu z ktorej bol swtch volany
+  - neuklada program counter namiesto neho uklada **ra** register ktory obsahuje navratovu adresu z ktorej bol **swtch** volany
 
 #### Code: Scheduling
   - proces ktory sa chce vzdat CPU musi: 
@@ -488,11 +488,11 @@
     - updatnut svoj state (p->state)
     - a potom zavolat **sched**
   - kedze je proces zamknuty(p->lock) prerusenia by mali byt vypnute
-  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yeild nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
+  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yield nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
 
 #### sched
   - vola swtch aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
-  - swtch vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
+  - **swtch** vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
   - scheduler pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
 
@@ -503,9 +503,9 @@
     -  pocet nested spinlockov potrebnych na riadenie deaktivacie interuptov
   - xv6 prideluje kazdemu cpu **hartid**(kazdy hartid je ulozeny v **tp** registry daneho CPU pokial je v jadre)
   - **start** nastavuje **tp** v zaciatkoch bootovania(v machine mode)
-  - **usertrapret** uklada tp v PT trampoliny
-  - **uservec** obnovuje tp ked vstupuje do kernelu z user space
-  - kompilator garantuje ze nikdy nepouzije tp
+  - **usertrapret** uklada **tp** v PT trampoliny
+  - **uservec** obnovuje **tp** ked vstupuje do kernelu z user space
+  - kompilator garantuje ze nikdy nepouzije **tp**
 
 #### mycpu()
   - vracia pointer na **struct cpu** daneho CPU
@@ -585,10 +585,10 @@
   - Väčšina použití **p->lock** však chráni aspekty vyššej úrovne štruktúry procesných údajov xv6 a algoritmy
   - veci ktore robi **p->lock**
     - s p->state zabranuje pretekom pri prideľovaní proc[] slotov pre nové procesy
-    - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí.
+    - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí
     - zabranuje rodicovskemu wait aby collectol proces ktory je v state **ZOMBIE** predtym ako sa vdal CPU
-    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za**RUNNABLE** ale predtym ako bol volany **swtch** 
-    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy.
+    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
+    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy
     -  Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
     -  Spolu s condition lockom pomáha zabrániť wakeupu od prehliadnutia procesu, ktorý vola sleep ale nedokoncil vzdavanie sa CPU
     -  Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako kill overuje **p->pid** a nastavenim **p->killed**
