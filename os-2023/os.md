@@ -34,7 +34,7 @@
    - [Wait, exit, kill](os.md#kod-wait-exit-kill)
    - [p->lock](os.md#p-lock)
 
-## Prednaska 1   ===============================
+## Prednaska 1
 
 #### Na co je dobry os?
 - Aplikácie (izolácia ↔ zdieľanie)
@@ -61,7 +61,7 @@
 
 
 
-## kapitola 2   ===============================
+## kapitola 2
 
 - Aplikacia beziacia v userspace moze vykonavat iba user mode instrukcie
 - software beziaci v kernel space moze vykonavat privilegovane instrukcie
@@ -140,7 +140,7 @@
 
 
 
-## Kapitola 3   ===============================
+## Kapitola 3
 
 #### xv6
 - umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
@@ -189,7 +189,7 @@
 
 
 
-## Kapitola 4   ===============================
+## Kapitola 4
 
 #### Pasce a systemove volania(traps and syscalls)
   - tri druhy udalosti ktore sposobia ze CPU odloží bežné vykonávanie inštrukcií a vynúti prenos kontroly na špeciálny kód, ktory udalost spracuje
@@ -370,7 +370,7 @@
 
 
 
-## Kapitola 4.6   ===============================
+## Kapitola 4.6
 
 #### Reakcia xv6 na vynimky
   - v user mode
@@ -445,7 +445,7 @@
 
 
 
-## Kapitola 7   ===============================
+## Kapitola 7
 
 #### Multiplexing
   - Vytvara iluziu ze kazdy proces ma svoje CPU
