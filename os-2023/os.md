@@ -1,6 +1,6 @@
-## OS Poznamky
+# OS Poznamky
 
-### Prednaska 1
+## Prednaska 1
 
 #### Na co je dobry os?
 - Aplikácie (izolácia ↔ zdieľanie)
@@ -26,7 +26,7 @@
 - Interakcia (Komunikácia procesov je však tiež potrebná)
 
 
-### kapitola 2
+## kapitola 2
 
 - Aplikacia beziacia v userspace moze vykonavat iba user mode instrukcie
 - software beziaci v kernel space moze vykonavat privilegovane instrukcie
@@ -103,7 +103,7 @@
 #### copyinstr
   kopiruje max pocet bajtov do dst z virtualnej adresy srcva
 
-### Kapitola 3
+## Kapitola 3
 
 #### xv6
 - umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
@@ -151,7 +151,7 @@
 #### treba dokoncit
 
 
-### Kapitola 4
+## Kapitola 4
 
 #### Pasce a systemove volania(traps and syscalls)
   - tri druhy udalosti ktore sposobia ze CPU odloží bežné vykonávanie inštrukcií a vynúti prenos kontroly na špeciálny kód, ktory udalost spracuje
@@ -330,7 +330,7 @@
 - xv6 nastavi stvec na kernelvec
 - Existuje časové okno, keď sa jadro začalo vykonávať, ale stvec je stále nastavený na uservec a je dôležité, aby počas tohto okna nenastalo žiadne prerušenie zariadenia. Našťastie RISC-V vždy deaktivuje prerušenia, keď začne zachytávať pascu, a xv6 ich znova povolí, kým nenastaví stvec.
 
-### Kapitola 4.6
+## Kapitola 4.6
 
 #### Reakcia xv6 na vynimky
   - v user mode
@@ -403,7 +403,7 @@
   - Interrupt (prerušenie)
     - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
 
-### Kapitola 7
+## Kapitola 7
 
 #### Multiplexing
   - Vytvara iluziu ze kazdy proces ma svoje CPU
@@ -432,8 +432,8 @@
   - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
   - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(struct context) a vratil sa ku contextu scheduleru
   - dva argumenty
-    - struct context *old
-    - struct context *new
+    - **struct context *old**
+    - **struct context *new**
   - ulozi aktualne registre v old a nacita nove z new
   - uklada iba callee-saved registre
   - pozna offset kazdeho registra zo struct context
@@ -446,11 +446,11 @@
     - updatnut svoj state (p->state)
     - a potom zavolat **sched**
   - kedze je proces zamknuty(p->lock) prerusenia by mali byt vypnute
-  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yeild nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
+  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yield nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
 
 #### sched
   - vola swtch aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
-  - swtch vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
+  - **swtch** vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
   - scheduler pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
 
@@ -461,9 +461,9 @@
     -  pocet nested spinlockov potrebnych na riadenie deaktivacie interuptov
   - xv6 prideluje kazdemu cpu **hartid**(kazdy hartid je ulozeny v **tp** registry daneho CPU pokial je v jadre)
   - **start** nastavuje **tp** v zaciatkoch bootovania(v machine mode)
-  - **usertrapret** uklada tp v PT trampoliny
-  - **uservec** obnovuje tp ked vstupuje do kernelu z user space
-  - kompilator garantuje ze nikdy nepouzije tp
+  - **usertrapret** uklada **tp** v PT trampoliny
+  - **uservec** obnovuje **tp** ked vstupuje do kernelu z user space
+  - kompilator garantuje ze nikdy nepouzije **tp**
 
 #### mycpu()
   - vracia pointer na **struct cpu** daneho CPU
@@ -543,10 +543,10 @@
   - Väčšina použití **p->lock** však chráni aspekty vyššej úrovne štruktúry procesných údajov xv6 a algoritmy
   - veci ktore robi **p->lock**
     - s p->state zabranuje pretekom pri prideľovaní proc[] slotov pre nové procesy
-    - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí.
+    - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí
     - zabranuje rodicovskemu wait aby collectol proces ktory je v state **ZOMBIE** predtym ako sa vdal CPU
-    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za**RUNNABLE** ale predtym ako bol volany **swtch** 
-    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy.
+    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
+    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy
     -  Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
     -  Spolu s condition lockom pomáha zabrániť wakeupu od prehliadnutia procesu, ktorý vola sleep ale nedokoncil vzdavanie sa CPU
     -  Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako kill overuje **p->pid** a nastavenim **p->killed**
