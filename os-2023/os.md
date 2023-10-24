@@ -1,6 +1,40 @@
 # OS Poznamky
 
-## Prednaska 1
+### Obsah
+ - [Kapitola 1](os.md#prednaska-1)
+ - [Kapitola 2](os.md#kapitola-2)
+   - [Kniznicny pristup](os.md#kniznicny-pristup)
+   - [Monoliticke jadro](os.md#monoliticke-jadro)
+   - [Mikrokernel](os.md#mikrokernel)
+   - [Proces](os.md#proces)
+ - [Kapitola 3](os.md#kapitola-3)
+   - [Tabulky stranok](os.md#tabulky-stranokpage-tables-pt)
+   - [Page table entry (PTE)](os.md#page-table-entry-pte)
+   - [Preklad na fyzicku adresu](os.md#preklad-na-fyzicku-adresu-v-troch-krokoch)
+ - [Kapitola 4](os.md#kapitola-4)
+   - [Pasca](os.md#pasca-trap)
+     - [V user space](os.md#pascevynimky-v-user-space)
+     - [V kernel space](os.md#pasce-z-kernel-space)
+   - [Trapframe](os.md#trapframe-1)
+   - [Usertrap](os.md#usertrap)
+   - [Usertrapret](os.md#usertrapret)
+   - [Ecall](os.md#ecall)
+   - [Kernelvec](os.md#kernelvec)
+   - [Kerneltrap](os.md#kerneltrap)
+ - [Kapitola 4.6](os.md#kapitola-46)
+   - [COW fork](os.md#copy-on-write-cow-fork)
+   - [Chyby stranok](os.md#chyby-stranok)
+   - [Leniva alokacia](os.md#lazy-alocation)
+ - [Kapitola 7](os.md#kapitola-7)
+   - [Scheduler](os.md#schedulerplanovac)
+   - [Swtch](os.md#swtch)
+   - [Sched](os.md#sched)
+   - [mycpu() a myproc()](os.md#mycpu-myproc)
+   - [Sleep a wakeup](os.md#sleep-and-wakeup-1)
+   - [Wait, exit, kill](os.md#kod-wait-exit-kill)
+   - [p->lock](os.md#p-lock)
+
+## Prednaska 1   ===============================
 
 #### Na co je dobry os?
 - Aplikácie (izolácia ↔ zdieľanie)
@@ -26,7 +60,8 @@
 - Interakcia (Komunikácia procesov je však tiež potrebná)
 
 
-## kapitola 2
+
+## kapitola 2   ===============================
 
 - Aplikacia beziacia v userspace moze vykonavat iba user mode instrukcie
 - software beziaci v kernel space moze vykonavat privilegovane instrukcie
@@ -103,7 +138,9 @@
 #### copyinstr
   kopiruje max pocet bajtov do dst z virtualnej adresy srcva
 
-## Kapitola 3
+
+
+## Kapitola 3   ===============================
 
 #### xv6
 - umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
@@ -151,7 +188,8 @@
 #### treba dokoncit
 
 
-## Kapitola 4
+
+## Kapitola 4   ===============================
 
 #### Pasce a systemove volania(traps and syscalls)
   - tri druhy udalosti ktore sposobia ze CPU odloží bežné vykonávanie inštrukcií a vynúti prenos kontroly na špeciálny kód, ktory udalost spracuje
@@ -261,7 +299,7 @@
     - zmenu **stvec** na **uservec** 
     - prípravu polí **trapframe**, na ktoré sa **uservec** spolieha 
     - nastavenie **sepc** na predtým uložené **user PC**
-  - na konci zavola **userret** na stranke trampilny(ta je mapovana v user page aj kernel page)
+  - na konci zavola **userret** na stranke trampoliny(ta je mapovana v user page aj kernel page)
     - pretoze **userret** prepne tabuky stranok
     - odovzda pointer na user page table procesu do a0
     - prepne **satp** na adresu user page table procesu
@@ -330,7 +368,9 @@
 - xv6 nastavi stvec na kernelvec
 - Existuje časové okno, keď sa jadro začalo vykonávať, ale stvec je stále nastavený na uservec a je dôležité, aby počas tohto okna nenastalo žiadne prerušenie zariadenia. Našťastie RISC-V vždy deaktivuje prerušenia, keď začne zachytávať pascu, a xv6 ich znova povolí, kým nenastaví stvec.
 
-## Kapitola 4.6
+
+
+## Kapitola 4.6   ===============================
 
 #### Reakcia xv6 na vynimky
   - v user mode
@@ -403,7 +443,9 @@
   - Interrupt (prerušenie)
     - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
 
-## Kapitola 7
+
+
+## Kapitola 7   ===============================
 
 #### Multiplexing
   - Vytvara iluziu ze kazdy proces ma svoje CPU
@@ -508,6 +550,7 @@
 
 #### kod: wait, exit, kill
   - exit prevedie volajuceho do **ZOMBIE** state dokial si to rodicov wait nevsimne a zmeni state childu na **UNUSED** skopiruje childov exit status a vrati rodicovi pid childu
+  - exit umožňuje, aby sa proces sám ukončil, zabitie nechá jeden proces požiadať o ukončenie iného
   
 #### exit
   - zaznamenava exit status, 
@@ -515,7 +558,7 @@
   - vola **reparent** aby dalo child **init procesu**, 
   - zobudi rodica ak je vo **wait**, nastavi status volajuceho na **ZOMBIE**
   - trvalo odvzdava CPU
-  - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vydiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
+  - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vidiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
   - ak rodic exitne skorej ako child tak da child **init procesu** (aby mal kazdy child nad sebou proces ktory ponom 'poupratuje')
 
 #### wait
@@ -544,6 +587,7 @@
   - veci ktore robi **p->lock**
     - s **p->state** zabranuje pretekom pri prideľovaní **proc[]** slotov pre nové procesy
     - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí
+
     - zabranuje rodicovskemu **wait** aby collectol proces ktoreho **p->state == ZOMBIE** predtym ako sa vzdal CPU
     - zabranuje **scheduleru** ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
     - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť **RUNNABLE** procesy
@@ -551,3 +595,6 @@
     - Spolu s condition lockom pomáha zabrániť **wakeupu** prehliadnutie procesu, ktorý vola **sleep** ale nedokoncil vzdavanie sa CPU
     - Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako **kil**l overuje **p->pid** a nastavenim **p->killed**
     - donuti **kill** overit a zapisat **p->state** atomicky
+    
+    #### round robin
+  - jednoduchá politika plánovania, ktorá postupne spúšťa každý proces
