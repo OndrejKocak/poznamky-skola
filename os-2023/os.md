@@ -34,7 +34,7 @@
    - [Wait, exit, kill](os.md#kod-wait-exit-kill)
    - [p->lock](os.md#p-lock)
 
-### Prednaska 1   ===============================
+## Prednaska 1   ===============================
 
 #### Na co je dobry os?
 - Aplikácie (izolácia ↔ zdieľanie)
@@ -61,7 +61,7 @@
 
 
 
-### kapitola 2   ===============================
+## kapitola 2   ===============================
 
 - Aplikacia beziacia v userspace moze vykonavat iba user mode instrukcie
 - software beziaci v kernel space moze vykonavat privilegovane instrukcie
@@ -140,7 +140,7 @@
 
 
 
-### Kapitola 3   ===============================
+## Kapitola 3   ===============================
 
 #### xv6
 - umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
@@ -189,7 +189,7 @@
 
 
 
-### Kapitola 4   ===============================
+## Kapitola 4   ===============================
 
 #### Pasce a systemove volania(traps and syscalls)
   - tri druhy udalosti ktore sposobia ze CPU odloží bežné vykonávanie inštrukcií a vynúti prenos kontroly na špeciálny kód, ktory udalost spracuje
@@ -370,7 +370,7 @@
 
 
 
-### Kapitola 4.6   ===============================
+## Kapitola 4.6   ===============================
 
 #### Reakcia xv6 na vynimky
   - v user mode
@@ -445,7 +445,7 @@
 
 
 
-### Kapitola 7   ===============================
+## Kapitola 7   ===============================
 
 #### Multiplexing
   - Vytvara iluziu ze kazdy proces ma svoje CPU
@@ -459,20 +459,20 @@
 
 #### Scheduler(Planovac)
   - ma vyhradene vlakno(ulozene registre a stack) pretoze nieje bezpecne aby sa scheduler vykonal na stacku stareho procesu
-  - existuje vo forme specialneho jadra(na ktorom bezi scheduler) pre kazde CPU
-  - existuje jeden pripad ked volanie swtch z schedulera nekonci v sched:
+  - existuje vo forme specialneho vlakna(na ktorom bezi scheduler) pre kazde CPU
+  - existuje jeden pripad ked volanie **swtch** z schedulera nekonci v **sched**:
     - **allocproc** nastavi contextovy register **ra** na adresu **forkret** takze prvy swtch sa vrati na adresu tej funkcie
     - **forkret** existuje aby uvolnil **p->lock**
-    - novy proces sa musi vratit do user space ako keby sa vracal z forku a namiesto toho moze zacat usertrapret
+    - novy proces sa musi vratit do user space ako keby sa vracal z forku a namiesto toho moze zacat **usertrapret**
   - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
   - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
-  - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu p->proc, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
+  - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu **p->proc**, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
   - struktura sheduling kodu, set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
-  - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze c->proc)
+  - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze **c->proc**)
 
 #### swtch
   - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
-  - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(struct context) a vratil sa ku contextu scheduleru
+  - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(**struct context**) a vratil sa ku contextu scheduleru
   - dva argumenty
     - struct context *old
     - struct context *new
@@ -485,21 +485,21 @@
   - proces ktory sa chce vzdat CPU musi: 
     - ziskat vlastny process lock **p->lock**(kontrola locku sa prenasa na switchnuty proces)
     - uvolnit vsetky ostatne zamky
-    - updatnut svoj state (p->state)
+    - updatnut svoj state (**p->state**)
     - a potom zavolat **sched**
-  - kedze je proces zamknuty(p->lock) prerusenia by mali byt vypnute
-  - ak by **p->lock** nebol podrzany pocas swtch ine CPU by sa mohlo rozhodnut spustit proces potom ako yield nastavil svoj state na **RUNNABLE** ale predtym ako by swtch zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
+  - kedze je proces zamknuty(**p->lock**) prerusenia by mali byt vypnute
+  - ak by **p->lock** nebol podrzany pocas volania **swtch** ine CPU by sa mohlo rozhodnut spustit proces potom ako **yield** nastavil svoj state na **RUNNABLE** ale predtym ako by **swtch** zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
 
 #### sched
-  - vola swtch aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
+  - vola **swtch** aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
   - **swtch** vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
-  - scheduler pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
+  - **scheduler** pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
 
 #### mycpu() myproc()
   - xv6 uchovava **struct cpu** pre kazde CPU, ta zaznamenava:
     -  aktualne beziaci proces na danom CPU, 
-    -  ulozene registre scheduler threadu
+    -  ulozene registre **scheduler threadu**
     -  pocet nested spinlockov potrebnych na riadenie deaktivacie interuptov
   - xv6 prideluje kazdemu cpu **hartid**(kazdy hartid je ulozeny v **tp** registry daneho CPU pokial je v jadre)
   - **start** nastavuje **tp** v zaciatkoch bootovania(v machine mode)
@@ -514,16 +514,16 @@
 
 #### myproc()
   - vracia pointer na **struct proc** aktualneho procesu ktory bezi na danom CPU
-  - vypne prerusenia vyvola **mycpu()**, spracuje aktualny process pointer(c->proc) zo **struct cpu**, zapne prerusenia
+  - vypne prerusenia vyvola **mycpu()**, spracuje aktualny process pointer(**c->proc**) zo **struct cpu**, zapne prerusenia
   - vracana hodnota je bezpecne pouzitelna aj ked su interupts povolene
 
 #### Sleep and wakeup
   - casto nazyvane **sequence coordination** alebo **conditional synchronization mechanisms**
   - scheduling a locks pomahaju skryt akcie jedneho vlakna pred druhym
-  - spanok umožňuje vláknu jadra čakať na konkrétnu udalosť
+  - sleep umožňuje vláknu jadra čakať na konkrétnu udalosť
   - iné vlákno môže zavolať prebudenie, aby naznačilo, že vlákna čakajúce na udalosť by sa mali obnoviť
-  - mozu ako wait channel pouzit akekolvek im vyhovujuce cislo(Xv6 často používa adresu dátovej štruktúry jadra zapojenej do čakania)
-  - spiaci proces drzi bud condition lock alebo p->lock alebo obidva(predtym ako je vyhodnotena podmienka a je oznaceny za **SLEEPING**)
+  - mozu ako **wait channel** pouzit akekolvek im vyhovujuce cislo(Xv6 často používa adresu dátovej štruktúry jadra zapojenej do čakania)
+  - spiaci proces drzi bud condition lock alebo **p->lock** alebo obidva(predtym ako je vyhodnotena podmienka a je oznaceny za **SLEEPING**)
 
 #### sleep
   - sleep oznaci aktualny proces ako **SLEEPING** a potom zavola **shed** aby sa vzdal CPU
@@ -533,18 +533,18 @@
   - hlada spiaci proces na danom wait channely a oznaci ho za **RUNNABLE**
   - V určitom bode proces získa stavový zámok, nastaví stav, na ktorý spánok čaká, a zavolá wakeup(chan).
   - je dolezite aby sa **wakeup volal ked je condition lock v drzani**
-  - prechadza cez procesy v tabulke procesov ziskava p->lock daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**
-  - v loope drzi conditional lock aj p->lock
+  - prechadza cez procesy v tabulke procesov ziskava **p->lock** daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**
+  - v loope drzi conditional lock aj **p->lock**
 
 #### kod: pipe
   - **pipewrite**
     - zacina ziskanim pipe locku **pi->lock**(ktory chrani pocty, data a ich asociovane invarianty), potom cykluje cez zapisovane bajty(medzitym **piperead caka spinovanim v acquire**) pricom kazdy pridava do pipe, pocas cyklu sa moze buffer naplnit v tomto pripade pipewrite zavola **wakeup** aby upozornil spiacich readerov na to ze data cakaju v bufferi
-    - potom sleep uspi pipewrite na **&pi->nwrite** aby cakal kym reader zoberie nejake bajty z buffera
-    - sleep vypusti **pi->lock** pocas uspavania pipewritu
+    - potom **sleep** uspi pipewrite na **&pi->nwrite** aby cakal kym reader zoberie nejake bajty z buffera
+    - **sleep** vypusti **pi->lock** pocas uspavania pipewritu
   - **piperead**
     - ked ma **pi->lock** k dispozicii tak ho acquirne a vstupi do **kritickej sekcie**
     - for loop, kopiruje data z pipe a incrementuje nread o pocet precitanych bajtov, tolko bajtov je teraz dostupnych na zapis, piperead zavola **wakeup** aby zobudil ktorehokolvek spiaceho writera, predtym ako vracia
-    - wakeup najde spiaceho writera na adrese **&pi->nwrite** a oznaci ho za **RUNNABLE**
+    - **wakeup** najde spiaceho writera na adrese **&pi->nwrite** a oznaci ho za **RUNNABLE**
   - kazda pipe je reprezentovana **struct pipe** ta obsahuje lock a data buffer
   - pouziva oddelene sleep channely pre **read a write(pi->nread a pi->nwrite)**
 
@@ -556,44 +556,45 @@
   - zaznamenava exit status, 
   - uvolni niektore zdroje, 
   - vola **reparent** aby dalo child **init procesu**, 
-  - zobudi rodica ak je vo wait, nastavi status volajuceho na **ZOMBIE**
+  - zobudi rodica ak je vo **wait**, nastavi status volajuceho na **ZOMBIE**
   - trvalo odvzdava CPU
   - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vidiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
   - ak rodic exitne skorej ako child tak da child **init procesu** (aby mal kazdy child nad sebou proces ktory ponom 'poupratuje')
 
 #### wait
   - zacina ziskanim **wait_lock**
-    - **wait_lock** funguje ako stavovy zamok, pomáha zabezpečiť, aby rodič nezmeškal prebudenie od odchádzajúceho potomka
-  - potom wait skenuje tabulku procesov a ak najde child so statom **ZOMBIE** tak uvolni prostriedky childu a jeho proc struct
-  - a skopiruje childov exit status na adresu dodanu do wait a vrati childov proces id
+    - **wait_lock** funguje ako stavovy zamok, pomáha zabezpečiť, aby rodič nezmeškal prebudenie od ukoncujucehosa potomka
+  - potom wait skenuje tabulku procesov a ak najde child ktoreho **p->state == ZOMBIE** tak uvolni prostriedky childu a jeho proc struct
+  - a skopiruje exit status childu na adresu dodanu do wait a vrati pid childu
   - ak nenajde ziadne ukoncene childy tak zavola sleep a caka az niektory exitne a potom scanuje znova
-  - casto drzi dva zamky **wait_lock** a nejakeho procesu **pp->lock**
+  - casto drzi dva zamky **wait_lock** a  **pp->lock** nejakeho procesu
   - vyhýbanie sa **deadlocku je najprv wait_lock a potom pp->lock**
 
 #### kill
   - nastavi **p->killed** obete a ak spi tak ju zobudi, nakoniec obet opusti kernel a v tom momente kod v **usertrap** zavola exit ak je **p->killed** nastaveny
-  - Ak obeť beží v používateľskom priestore, čoskoro vstúpi do jadra vykonaním systémového volania alebo preto, že nastane timer(alebo nejaké iné zariadenie) interupt
-  - Niektoré cally sleepu tiež testujú p->killed v slučke a opustia aktuálnu aktivitu, ak je nastavená
+  - Ak obeť beží v používateľskom priestore, čoskoro vstúpi do jadra vykonaním syscallu alebo preto, že nastane timer(alebo nejaké iné zariadenie) interupt
+  - Niektoré cally sleepu tiež testujú **p->killed** v slučke a opustia aktuálnu aktivitu, ak je nastavená
 
 #### process locking
   - **p->parent** je chraneny globalnym **wait_lockom** (iba rodic procesu ho modifikuje)
   - ucelom **wait_locku** je spravat sa ako conditional lock pocas toho ako **wait** spi a caka na to az sa ukonci nejaky child
-  - wait_lock je globalny zamok pretoze kým ho proces nezíska, nemôže vedieť, kto je jeho rodič.
+  - **wait_lock** je globalny zamok pretoze kým ho proces nezíska, nemôže vedieť, kto je jeho rodič.
 
 #### p->lock
   - najkomplexnejsi zamok v xv6
   - musí byt drzany pri čítaní alebo zapisovani ktoréhokoľvek z nasledujúcich polí struct proc : **p->state, p->chan, p->killed, p->xstate a p ->pid**
   - Väčšina použití **p->lock** však chráni aspekty vyššej úrovne štruktúry procesných údajov xv6 a algoritmy
   - veci ktore robi **p->lock**
-    - s p->state zabranuje pretekom pri prideľovaní proc[] slotov pre nové procesy
+    - s **p->state** zabranuje pretekom pri prideľovaní **proc[]** slotov pre nové procesy
     - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí
-    - zabranuje rodicovskemu wait, aby collectol proces, ktory je v state **ZOMBIE** predtym ako sa vzdal CPU
-    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
-    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy
-    -  Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
-    -  Spolu s condition lockom pomáha zabrániť wakeupu od prehliadnutia procesu, ktorý vola sleep ale nedokoncil vzdavanie sa CPU
-    -  Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako kill overuje **p->pid** a nastavenim **p->killed**
-    -  donuti kill overit a zapisat **p->state** atomicky
 
-#### round robin
+    - zabranuje rodicovskemu **wait** aby collectol proces ktoreho **p->state == ZOMBIE** predtym ako sa vzdal CPU
+    - zabranuje **scheduleru** ineho jadra spustit yielding proces potom co bol proces oznaceny za **RUNNABLE** ale predtym ako bol volany **swtch** 
+    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť **RUNNABLE** procesy
+    - Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
+    - Spolu s condition lockom pomáha zabrániť **wakeupu** prehliadnutie procesu, ktorý vola **sleep** ale nedokoncil vzdavanie sa CPU
+    - Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako **kil**l overuje **p->pid** a nastavenim **p->killed**
+    - donuti **kill** overit a zapisat **p->state** atomicky
+    
+    #### round robin
   - jednoduchá politika plánovania, ktorá postupne spúšťa každý proces
