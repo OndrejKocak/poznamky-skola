@@ -425,19 +425,19 @@
   - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
   - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
   - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu p->proc, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
-  - struktura sheduling kodu set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
+  - struktura sheduling kodu, set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
   - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze c->proc)
 
 #### swtch
   - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
   - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(struct context) a vratil sa ku contextu scheduleru
   - dva argumenty
-    - **struct context *old**
-    - **struct context *new**
+    - struct context *old
+    - struct context *new
   - ulozi aktualne registre v old a nacita nove z new
   - uklada iba callee-saved registre
   - pozna offset kazdeho registra zo struct context
-  - neuklada program counter namiesto neho uklada ra register ktory obsahuje navratovu adresu z ktorej bol swtch volany
+  - neuklada program counter namiesto neho uklada **ra** register ktory obsahuje navratovu adresu z ktorej bol **swtch** volany
 
 #### Code: Scheduling
   - proces ktory sa chce vzdat CPU musi: 
