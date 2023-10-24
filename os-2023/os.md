@@ -493,3 +493,61 @@
   - je dolezite aby sa **wakeup volal ked je condition lock v drzani**
   - prechadza cez procesy v tabulke procesov ziskava p->lock daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**
   - v loope drzi conditional lock aj p->lock
+
+#### kod: pipe
+  - **pipewrite**
+    - zacina ziskanim pipe locku **pi->lock**(ktory chrani pocty, data a ich asociovane invarianty), potom cykluje cez zapisovane bajty(medzitym **piperead caka spinovanim v acquire**) pricom kazdy pridava do pipe, pocas cyklu sa moze buffer naplnit v tomto pripade pipewrite zavola **wakeup** aby upozornil spiacich readerov na to ze data cakaju v bufferi
+    - potom sleep uspi pipewrite na **&pi->nwrite** aby cakal kym reader zoberie nejake bajty z buffera
+    - sleep vypusti **pi->lock** pocas uspavania pipewritu
+  - **piperead**
+    - ked ma **pi->lock** k dispozicii tak ho acquirne a vstupi do **kritickej sekcie**
+    - for loop, kopiruje data z pipe a incrementuje nread o pocet precitanych bajtov, tolko bajtov je teraz dostupnych na zapis, piperead zavola **wakeup** aby zobudil ktorehokolvek spiaceho writera, predtym ako vracia
+    - wakeup najde spiaceho writera na adrese **&pi->nwrite** a oznaci ho za **RUNNABLE**
+  - kazda pipe je reprezentovana **struct pipe** ta obsahuje lock a data buffer
+  - pouziva oddelene sleep channely pre **read a write(pi->nread a pi->nwrite)**
+
+#### kod: wait, exit, kill
+  - exit prevedie volajuceho do **ZOMBIE** state dokial si to rodicov wait nevsimne a zmeni state childu na **UNUSED** skopiruje childov exit status a vrati rodicovi pid childu
+  
+#### exit
+  - zaznamenava exit status, 
+  - uvolni niektore zdroje, 
+  - vola **reparent** aby dalo child **init procesu**, 
+  - zobudi rodica ak je vo wait, nastavi status volajuceho na **ZOMBIE**
+  - trvalo odvzdava CPU
+  - drzi  **wait_lock**(pretoze jeho podmienka pre wakeup) aj **p->lock**(aby zabranil waitu vydiet **ZOMBIE** state predtym ako child zavola swtch) pocas tejto sekvencie
+  - ak rodic exitne skorek ako child tak da child **init procesu** (aby mal kazdy child nad sebou proces ktory ponom 'poupratuje')
+
+#### wait
+  - zacina ziskanim **wait_lock**
+    - **wait_lock** funguje ako stavovy zamok, pomáha zabezpečiť, aby rodič nezmeškal prebudenie od odchádzajúceho potomka
+  - potom wait skenuje tabulku procesov a ak najde child so statom **ZOMBIE** tak uvolni prostriedky childu a jeho proc struct
+  - a skopiruje childov exit status na adresu dodanu do wait a vrati childov proces id
+  - ak nenajde ziadne ukoncene childy tak zavola sleep a caka az niektory exitne a potom scanuje znova
+  - casto drzi dva zamky **wait_lock** a nejakeho procesu **pp->lock**
+  - vyhýbanie sa **deadlocku je najprv wait_lock a potom pp->lock**
+
+#### kill
+  - nastavi **p->killed** obete a ak spi tak ju zobudi, nakoniec obet opusti kernel a v tom momente kod v **usertrap** zavola exit ak je **p->killed** nastaveny
+  - Ak obeť beží v používateľskom priestore, čoskoro vstúpi do jadra vykonaním systémového volania alebo preto, že nastane timer(alebo nejaké iné zariadenie) interupt
+  - Niektoré cally sleepu tiež testujú p->killed v slučke a opustia aktuálnu aktivitu, ak je nastavená
+
+#### process locking
+  - **p->parent** je chraneny globalnym **wait_lockom** (iba rodic procesu ho modifikuje)
+  - ucelom **wait_locku** je spravat sa ako conditional lock pocas toho ako **wait** spi a caka na to az sa ukonci nejaky child
+  - wait_lock je globalny zamok pretoze kým ho proces nezíska, nemôže vedieť, kto je jeho rodič.
+
+#### p->lock
+  - najkomplexnejsi zamok v xv6
+  - musí byt drzany čítaní alebo zapisovani ktoréhokoľvek z nasledujúcich polí struct proc : **p->state, p->chan, p->killed, p->xstate a p ->pid**
+  - Väčšina použití **p->lock** však chráni aspekty vyššej úrovne štruktúry procesných údajov xv6 a algoritmy
+  - veci ktore robi **p->lock**
+    - s p->state zabranuje pretekom pri prideľovaní proc[] slotov pre nové procesy
+    - Ukrýva proces pred zrakom, kým sa vytvára alebo ničí.
+    - zabranuje rodicovskemu wait aby collectol proces ktory je v state **ZOMBIE** predtym ako sa vdal CPU
+    - zabranuje scheduleru ineho jadra spustit yielding proces potom co bol proces oznaceny za**RUNNABLE** ale predtym ako bol volany **swtch** 
+    - Zabezpečuje, že iba jeden plánovač jadra sa rozhodne spustiť RUNNABLE procesy.
+    -  Zabraňuje tomu, aby prerušenie časovača spôsobilo uvoľnenie procesu, kým je vo **swtch**
+    -  Spolu s condition lockom pomáha zabrániť wakeupu od prehliadnutia procesu, ktorý vola sleep ale nedokoncil vzdavanie sa CPU
+    -  Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako kill overuje **p->pid** a nastavenim **p->killed**
+    -  donuti kill overit a zapisat **p->state** atomicky
