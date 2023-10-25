@@ -471,7 +471,7 @@
   - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze **c->proc**)
 
 #### swtch
-  - vykonáva uloženie a obnovenie pre prepínač vlákien jadra
+  - vykonáva uloženie a obnovenie contextu pre prepínač vlákien jadra
   - ked sa proces vzdava CPU zavola swtch aby ulozil svoj context(**struct context**) a vratil sa ku contextu scheduleru
   - dva argumenty
     - struct context *old
@@ -491,8 +491,8 @@
   - ak by **p->lock** nebol podrzany pocas volania **swtch** ine CPU by sa mohlo rozhodnut spustit proces potom ako **yield** nastavil svoj state na **RUNNABLE** ale predtym ako by **swtch** zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
 
 #### sched
-  - vola **swtch** aby ulozil aktualny context do **p->context** a switch to scheduler context do **cpu->context**
-  - **swtch** vracia na stack scheduleru ako keby switch planovaca vracal(celkom confusing)
+  - vola **swtch** aby ulozil aktualny context do **p->context** a swtch to scheduler context do **cpu->context**
+  - **swtch** vracia na stack scheduleru ako keby switch bol volany zo **scheduleru**
   - **scheduler** pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
 
@@ -596,5 +596,5 @@
     - Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako **kil**l overuje **p->pid** a nastavenim **p->killed**
     - donuti **kill** overit a zapisat **p->state** atomicky
     
-    #### round robin
+#### round robin
   - jednoduchá politika plánovania, ktorá postupne spúšťa každý proces
