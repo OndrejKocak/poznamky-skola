@@ -490,8 +490,12 @@
   - kedze je proces zamknuty(**p->lock**) prerusenia by mali byt vypnute
   - ak by **p->lock** nebol podrzany pocas volania **swtch** ine CPU by sa mohlo rozhodnut spustit proces potom ako **yield** nastavil svoj state na **RUNNABLE** ale predtym ako by **swtch** zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
 
+#### Yield
+  - vola **sched**
+  - vzdava sa CPU
+
 #### sched
-  - vola **swtch** aby ulozil aktualny context do **p->context** a swtch to scheduler context do **cpu->context**
+  - vola **swtch** aby ulozil aktualny context do **p->context** a prepne na context scheduleru ktory bol ulozeny v **cpu->context**
   - **swtch** vracia na stack scheduleru ako keby switch bol volany zo **scheduleru**
   - **scheduler** pokracuje svoj for loop, najde proces, prepne na neho a cyklus sa opakuje
   - jedine miesto kde sa kernel thread vzdava CPU(a vzdy prepina na rovnake miesto v scheduleri ktore skoro vzdy prepina na kernel thread ktory volal **sched**)
