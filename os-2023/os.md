@@ -540,7 +540,7 @@
   - hlada spiaci proces na danom wait channely a oznaci ho za **RUNNABLE**
   - V určitom bode proces získa stavový zámok, nastaví stav, na ktorý spánok čaká, a zavolá wakeup(chan).
   - je dolezite aby sa **wakeup volal ked je condition lock v drzani**
-  - prechadza cez procesy v tabulke procesov ziskava **p->lock** daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**
+  - prechadza cez procesy v tabulke procesov ziskava **p->lock** daneho procesu(aby sa so sleepom neminuli a preto ze bude menit state procesu), ak najde **SLEEPING** process so zhodnym channelom tak ho oznaci za **RUNNABLE**(zobudi vsetky spiace procesy na danom channeli)
   - v loope drzi conditional lock aj **p->lock**
 
 #### kod: pipe
@@ -553,6 +553,7 @@
     - for loop, kopiruje data z pipe a incrementuje nread o pocet precitanych bajtov, tolko bajtov je teraz dostupnych na zapis, piperead zavola **wakeup** aby zobudil ktorehokolvek spiaceho writera, predtym ako vracia
     - **wakeup** najde spiaceho writera na adrese **&pi->nwrite** a oznaci ho za **RUNNABLE**
   - kazda pipe je reprezentovana **struct pipe** ta obsahuje lock a data buffer
+  - nread a nwrite pocitaju kolko bolo precitanych a zapisanych bajtov
   - pouziva oddelene sleep channely pre **read a write(pi->nread a pi->nwrite)**
 
 #### kod: wait, exit, kill
@@ -603,5 +604,5 @@
     - Zabraňuje tomu, aby obet killu skoncila a bola realocovana medzitym ako **kil**l overuje **p->pid** a nastavenim **p->killed**
     - donuti **kill** overit a zapisat **p->state** atomicky
     
-#### round robin
+#### round robin AKA ide piesen do kola
   - jednoduchá politika plánovania, ktorá postupne spúšťa každý proces
