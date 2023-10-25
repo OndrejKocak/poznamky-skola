@@ -456,6 +456,10 @@
 #### Context switching
   - Prepnutie z jedného vlákna do druhého zahŕňa uloženie registrov CPU starého vlákna a obnovenie predtým uložených registrov nového vlákna(CPU prepne zásobníky a prepne, aký kód vykonáva)
 
+#### Corutiny 
+  - procesy ktore medzi sebou prehadzuju kontorulu cez prepinanie jadier
+  - **shed a scheduler**
+
 
 #### Scheduler(Planovac)
   - ma vyhradene vlakno(ulozene registre a stack) pretoze nieje bezpecne aby sa scheduler vykonal na stacku stareho procesu
@@ -464,10 +468,10 @@
     - **allocproc** nastavi contextovy register **ra** na adresu **forkret** takze prvy swtch sa vrati na adresu tej funkcie
     - **forkret** existuje aby uvolnil **p->lock**
     - novy proces sa musi vratit do user space ako keby sa vracal z forku a namiesto toho moze zacat **usertrapret**
-  - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevykona, opakuje
+  - bezi loop, najde proces ktory moze spustit, spusti proces dokial sa nevzda CPU(**yield**), opakuje
   - loop prechadza procesy v tabulke procesov a hlada proces ktoreho **p->state == RUNNABLE**
   - ked takyto proces najde nastavi pre kazde CPU aktualnu premenu procesu **p->proc**, oznaci proces za **RUNNING** potom zavola swtch aby ho spustil
-  - struktura sheduling kodu, set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
+  - struktura sheduling kodu: vynucuje set invariantov o kazdom procese a drzi **p->lock** vzdy ked invarianty niesu true
   - lock musi byt drzany pokial invarianty niesu obnovene(spravny release point je ked scheduler vymaze **c->proc**)
 
 #### swtch
@@ -480,6 +484,7 @@
   - uklada iba callee-saved registre
   - pozna offset kazdeho registra zo struct context
   - neuklada program counter namiesto neho uklada **ra** register ktory obsahuje navratovu adresu z ktorej bol **swtch** volany
+  - volajuci musi **drzat p->lock**
 
 #### Yield
   - vola **sched**
