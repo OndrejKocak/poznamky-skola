@@ -481,18 +481,16 @@
   - pozna offset kazdeho registra zo struct context
   - neuklada program counter namiesto neho uklada **ra** register ktory obsahuje navratovu adresu z ktorej bol **swtch** volany
 
-#### Code: Scheduling
-  - proces ktory sa chce vzdat CPU musi: 
+#### Yield
+  - vola **sched**
+  - vzdava sa CPU
+  - - proces ktory sa chce vzdat CPU musi: 
     - ziskat vlastny process lock **p->lock**(kontrola locku sa prenasa na switchnuty proces)
     - uvolnit vsetky ostatne zamky
     - updatnut svoj state (**p->state**)
     - a potom zavolat **sched**
   - kedze je proces zamknuty(**p->lock**) prerusenia by mali byt vypnute
   - ak by **p->lock** nebol podrzany pocas volania **swtch** ine CPU by sa mohlo rozhodnut spustit proces potom ako **yield** nastavil svoj state na **RUNNABLE** ale predtym ako by **swtch** zapricinil prestatie pouzivania vlastneho kernel stacku => 2CPU beziace na rovnakom kernel stacku
-
-#### Yield
-  - vola **sched**
-  - vzdava sa CPU
 
 #### sched
   - vola **swtch** aby ulozil aktualny context do **p->context** a prepne na context scheduleru ktory bol ulozeny v **cpu->context**
