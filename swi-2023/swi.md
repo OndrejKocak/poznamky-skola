@@ -50,3 +50,81 @@
 - **z hladiska bezpecnosti** => strata zivota, zranenie, poskodenie prostredia
 - **systemy kriticke pre danu ulohu/ciel** => zlyhanie ma za nasledok zlyhanie nejakej cielovo orientovanej cinnosti(navigacny system vesmirnej lode)
 - **pre podnikanie** => nasledok su vysoke ekonomicke straty
+
+## Prednaska 2
+
+### SW procesy
+- **specifikacia**
+  - definovanie toho, co ma system robit
+  - poziadavky na inziniersky proces:
+    - Ziskavanie a analyza
+    - specifikacia
+    - overenie
+- **navrh a implementacia**
+  - definovanie organizacie systemu a implementacia systemu(navrh)
+  - dizajnerske cinnosti:
+    - architektonicky navrh
+    - navrh databazy
+    - navrh rozhrania
+    - vyber a dizajn komponentov
+
+- **validacia**
+  - kontrola ci system robi to, co zakaznik chce(**verifikacia, validacia V&V**)
+  - testovanie systemu, **Fazy** testovania:
+    - **testovanie komponentov**
+    - **testovanie systemu**
+    - **zakaznicke testovanie**
+
+- **evolucia**
+  - zmena systemu v reakcii na meniace sa potreby zakaznika
+
+### Planom riadene procesy
+- vsetky procesne cinnosti vopred naplanovane (**planovane procesy**)
+- pokrok sa mera podla tohto planu
+
+### agile procesy
+- prirastokove planovanie, jednoduchsie zmenit proces tak, aby odrazal meniace sa poziadavky zakaznikov
+
+### SW procesne modely
+- **vodopadovy model(waterfall model)**
+  - model riadeny planom, pre velke projeky
+  - oddelene a odlisne fazy specifikacie a vyvoja:
+    - **analyza a definicia poziadaviek**
+    - **navrh systemy a sw**
+    - **implementacia a testovanie jednotiek**
+    - **integracia a testovanie systemu**
+    - **prevadzka a udrzba**
+  - neflexibilne rozdelenie projektu na jednotlive etapy stazuje reakciu na zmenu
+- **postupny vyvoj**
+  - specifikacia, vyvoj a validacia su prepojene navzajom
+  - moze byt riadeny planom alebo agile
+  - znizuju sa naklady na prisposobenie zmenam
+  - jednoduchsi feedback, rychlejsie dodanie
+  - proces nieje viditelny, struktura systemu ma tendenciu sa degradovat
+- **integracia a konfiguracia**
+  - system je zostaveny z existujucich konfig. komponentov
+  - moze byt riadeny planom alebo agile
+  - znizene naklady a rizika, pretoze menej sw sa vyvija od nuly
+  - ryclejsie dodanie a nasadenie systemu
+  - strata kontroly nad vyvojom opatovne pouzitych prvkov
+
+### Znizenie nakladov na prepracovanie
+- **predvidanie zmien**
+- **tolerancia zmien** => prisposob. relativne nizkym nakladom
+
+### Vyrovnanie sa s meniacimi poziadavkami
+- **Systemove prototypovanie**
+  - rychlo sa vyvinie verzia systemu, aby sa preverili poziadavky
+  - tento pristup podporuje predvidanie zmien
+  - vylepsena pouzitelnost systemu, kvalita dizajnu, udrzatelnost
+  - prototyp nemusi obsahovat kontrolu/obnovu chyb co nie je dobre
+- **inkrementalne dorucovanie**
+  - systemove inkrementy sa dorucuju zakaznikovi na pripomienkovanie a experimentovanie => podporuje vyhybaniu sa zmenam a toleranciu
+  - prirastokove dourcovanie ma nizsie riziko celkoveho zlyhania projektu
+
+### Procesy - urovne zrelosti sposobilosti
+- **lvl 1: pociatocne** => v podstate nekontrolovatelne
+- **lvl 2: opakovatelne** => postupy riadenia produktu
+- **lvl 3: definovane a pouzivane postupy**
+- **lvl 4: organizovane** => strategie manazerstva kvality
+- **lvl 5: optimalizovane** => strategie zlepsovania procesov
