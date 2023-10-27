@@ -128,3 +128,96 @@
 - **lvl 3: definovane a pouzivane postupy**
 - **lvl 4: organizovane** => strategie manazerstva kvality
 - **lvl 5: optimalizovane** => strategie zlepsovania procesov
+
+## Prednaska 3
+
+#### Rozdiely v sprave sw
+- **nehmotny produkt** => sw nieje vidiet
+- **jednorazove projekty** => problem predvidania problemu
+
+#### Univerzalne manazerske cinnosti
+- **planovanie projektu**
+  - za panovanie su zodpovedni projektovi manazeri
+  - odhadovanie/planovanie vyvoja projektu a pridelovanie ludi k uloham
+- **riadenie rizik**
+  - projekt manazeri posudzuju rizika ktore mozu ovlyvnit projekt
+- **riadenie ludi**
+  - projekt manazeri musia vyberat ludi do svojho timu a zaviest sposoby prace ku efektivnemu timovemu vykonu
+
+### Planovanie projektu
+- zahrna rozdelenie prace na casti a pridelenie ich clenom projektoveho timu, predvidanie problemov a priprava predbeznych rieseni
+- **projektovy plan:** vytvara sa na zaciatku projektu
+- je proces rozhodovania o tom, ako bude praca na projekte organizovana
+
+#### Etapy planovania
+- **faza navrhu**
+  - ked sa uchadzame o zakazku na vyvoj/poskytovanie sw systemu
+- **faza spustenia projektu**
+  - rozdelenie kto bude na projekte pracovat, ako bude rozdeleny
+- **pocas celeho projektu**
+  - z monitorovania postupu sa upravi plan
+
+#### Etapy agilneho planovania
+- **planovanie vydania**
+  - pozera sa niekolko mesiacov dopredu, rozhoduje o funkciach ktore by mali byt sucastou
+- **iteracne planovanie**
+  - kratkodoby vyhlad, zameriava sa na planovanie dalsieho prirastku systemu
+- **pristupy ku agilnemu planovaniu**
+  - planovanie v scrume
+  - zalozene na riadeni nevybavenych uloh
+  - planovacia hra
+
+#### Planom riadeny vyvoj
+- je pristup k sw inzinierstvu, kde je proces vyvoja podrobne naplanovany
+- **projektovy plan** stanovuje:
+  - **zdroje** dostupne pre projekt
+  - **rozpis prac**
+  - **harmonogram** vykonavania prace
+    - na zaklade kalendara
+    - siete aktivit
+
+### Riadenie rizik
+- zaobera sa identifikaciou a zostavovanim planov na minimalizaciu rizik
+
+#### Klasifikacia rizika
+- **rizika projektu** => ovlyvnit plan alebo zdroje
+- **rizika produktu** => ovlyvnit kvalitu alebo vykon SW
+- **rizika podnikatelske** => ovlyvnuju organizaciu, ktora vyvyja SW
+
+#### Proces riadenia rizik
+- **identifikacia** => produktovych/obchodnych rizik
+- **analyza** => posudenie pravdepodobnosti/dosledkov rizik
+- **planovanie** => vypracovanie planu na minimalizaciu rizik
+- **monitorovanie** => rizik pocas celeho projektu
+
+#### Planovanie rizika
+- **strategie vyhybania sa** => pravdepodobnost vzniku rizika je znizena
+- **strategie minimalizacie** => znizi sa vlyz rizika na projekt
+- **pohotovostne plany** => pre riesenie vznikuteho rizika
+
+### Riadenie ludi
+- doslednost, respekt, inkluzia, cestnost, motivacia ludi
+
+#### typy osobnosti
+- **orientovany na ulohy**
+  - motivaciou je samotna praca (kazdy chce robit to svoje)
+- **sebaorientovany**
+  - motivaciou je praca na dosiahnutie individualneho ciela(zbohatnut)
+- **orientovany na interakciu**
+  - motivaciou je pritomnost spolupracovnikov
+  - ludia chodia do prace, pretoze to maju radi
+
+#### skupinova sudrznost
+- kvalita skupiny vytvoria jej clenovia
+- tim sa od sebe navzajom uci , spoznavanie prace toho druheho
+- delia sa vedomosti, podporuje sa retaktoriny
+
+#### Efektivnost timu
+- **ludia v skupine** => potreba roznych ludi, pre rozne ulohy
+- **organizacia skupiny** => tak, aby kazdy mohol prispievat podla svojich schopnosti
+- **technicka/manazerska komunikacia** => nevyhnutna komunikacia medzi clenmi
+
+#### skupinova organizacia
+- **male skupiny**
+- **velke projekty**
+- **agilny vyvoj**
