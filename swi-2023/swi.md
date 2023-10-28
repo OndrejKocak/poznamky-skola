@@ -388,3 +388,119 @@
 #### **Architektúra riadená modelom**
 
 - Architektúra riadená modelom (MDA) bola predchodcom obecnejšieho modelom riadeného inžinierstva.
+
+## Prednaska 6
+
+### **Architektonický dizajn**
+
+- Architektonický dizajn zaoberá organizáciou softvérového systému a jeho štruktúrou.
+- Výstupom architektonického návrhu je model architektúry, ktorý opisuje, ako je systém zorganizovaný a komunikujú jeho komponenty.
+
+### **Výhody explicitnej architektúry**
+
+- Komunikácia so zainteresovanými stranami:
+    - Architektúra sa používa na diskusiu medzi zainteresovanými stranami systému.
+- Systémová analýza:
+    - Umožňuje analýzu, či systém môže splniť svoje nefunkčné požiadavky.
+- Opätovné použitie vo veľkom meradle:
+    - Architektúra môže byť opakovane použíteľná v rôznych systémoch.
+
+### **Použitie architektonických modelov**
+
+- Uľahčuje diskusiu o návrhu systému:
+    - Abstraktný pohľad na systém je užitočný pre komunikáciu a plánovanie projektov.
+- Dokumentovanie architektúry:
+    - Cieľom je vytvoriť model systému, ktorý zobrazuje komponenty, ich rozhrania a prepojenia.
+
+### **Architektonické reprezentácie**
+
+- Krabicové a čiarové diagramy sú veľmi abstraktné, ale užitočné pre komunikáciu a plánovanie projektov.
+- Niektorí tvrdia, že UML je vhodnou notáciou pre popis architektúr.
+- Architektonické popisné jazyky (ADL) boli vyvinuté, ale nie sú široko používané.
+
+### **Opätovné použitie architektúry**
+
+- Systémy v rovnakej doméne často majú podobné architektúry, ktoré odrážajú koncepty domény.
+- Aplikačné produktové rady sú postavené na základnej architektúre s variantmi podľa požiadaviek zákazníkov.
+
+### **Architektonické pohľady**
+
+- 4 + 1 pohľadový model softvérovej architektúry obsahuje:
+    - Logický pohľad (objekty alebo triedy objektov).
+    - Procesný pohľad (interagujúce procesy).
+    - Vývojový pohľad (rozloženie softvéru počas vývoja).
+    - Fyzický pohľad (hardvér systému a distribúcia softvérových komponentov medzi procesormi).
+    - Súvisiace prípady použitia alebo scenáre (+1).
+
+### **Architektonické vzory**
+
+- Architektonický vzor je štylizovaný popis osvedčenej dizajnérskej praxe, ktorý bol overený v rôznych prostrediach.
+
+### **(1) Organizácia systému**
+
+- Odráža základnú stratégiu štruktúrovania systému.
+- Najčastejšie sa používajú tri organizačné štýly:
+    - Štýl zdieľaného úložiska údajov
+    - Štýl zdieľaných služieb a serverov
+    - Abstraktný strojový alebo vrstvený štýl.
+
+#### **(1.1) Vrstvená architektúra**
+
+- Používa sa na modelovanie rozhrania podsystémov.
+- Organizuje systém do vrstiev, pričom každá vrstva poskytuje rôzne služby.
+- Podporuje postupný vývoj podsystémov v rôznych vrstvách.
+- V niektorých prípadoch môže byť umelé.
+
+#### **(1.2) Zdieľané úložisko údajov**
+
+- Subsystémy zdieľajú údaje cez centrálnu databázu alebo vlastné distribuované úložiská.
+- Model zdieľania úložiska sa používa na zdieľanie veľkého množstva údajov.
+
+#### **(1.3) Zdieľané služby a servery**
+
+- Model distribuovaného systému, ktorý zahrňuje údaje a spracovanie medzi rôznymi komponentmi.
+- Môže byť implementovaný na jednom počítači.
+- Obsahuje samostatné servery poskytujúce špecifické služby a klientov využívajúcich tieto služby.
+
+### **(2) Modulárne štýly rozkladu**
+
+- Štýly rozkladu (pod)systémov na moduly.
+- Modul je komponent systému, ktorý poskytuje služby iným komponentom, ale nepovažuje sa za samostatný systém.
+- Dva modulárne modely rozkladu:
+    - Objektový model, kde je systém rozložený na interagujúce objekty.
+    - Model potrubia alebo toku údajov, kde je systém rozložený na funkčné moduly transformujúce vstupy na výstupy.
+
+#### **(2.2) Architektúra potrubia a filtra**
+
+- Varianty tohto prístupu sú časté, najmä v systémoch na spracovanie údajov.
+- Dávkový sekvenčný model sa používa, keď sú transformácie postupné.
+
+#### **(3) Štýly ovládania**
+
+- Zaoberajú sa riadiacim tokom medzi podsystémami, na rozdiel od modelu rozkladu systému.
+
+#### (3.1) Centralizované ovládanie:
+
+- Jeden podsystém riadi ostatné.
+- (3.1.1) Model odovzdania a vrátenia riadenia: Riadenie sa pohybuje zhora nadol, vhodné pre sekvenčné systémy.
+- (3.1.2) Manažérsky model: Použiteľný pre súbežné systémy, kde jeden komponent riadi ostatné procesy.
+
+#### **(3.2) Ovládanie založené na udalostiach**
+
+- Udalosti sú externe generované a riadenie je založené na nich.
+- Dva hlavné modely riadené udalosťami:
+    - (3.2.1) Vysielací model: Udalosť je vysielaná do všetkých podsystémov, ktoré majú záujem.
+    - (3.2.2) Modely riadené prerušením: Používa sa v systémoch v reálnom čase s rýchlym spracovaním udalostí.
+
+#### **(3.2.1) Vysielací model**
+
+- Efektívny pri integrácii podsystémov na rôznych počítačoch v sieti.
+- Podsystémy registrujú záujem o konkrétne udalosti, ktoré sú im zasielané.
+- Riadiaca politika nie je vložená do správy udalostí, ale rozhoduje o nich samotné podsystémy.
+
+#### **(3.2.2) Riadenie prerušením**
+
+- Používa sa v systémoch v reálnom čase, kde je rýchla reakcia nevyhnutná.
+- Existujú typy prerušení s preddefinovaným spracovaním.
+- Každý typ prerušenia je spojený s umiestnením pamäte a prepínač prerušení vedie k spracovaniu udalosti.
+- Zabezpečuje rýchlu odozvu, ale vyžaduje zložité programovanie a overenie.
