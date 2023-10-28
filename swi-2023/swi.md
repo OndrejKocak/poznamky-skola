@@ -221,3 +221,86 @@
 - **male skupiny**
 - **velke projekty**
 - **agilny vyvoj**
+
+## Prednaska 4
+
+#### Inzinierstvo s poziadavkami
+- proces vytvarania sluzieb, ktore zakaznik od systemu vyzaduje a obmedzenia, za ktorych system funguje a je vyvijany
+
+### Poziadavky
+- by mali uvadzat, **co** ma system robit a **aky** ma byt + **navrh** by mal popisovat, **ako** to ma system robit
+- moze byt zakladom pre ponuku na zakazku alebo pre samotnu zmluvu
+
+#### Druhy
+- **Poziadavky pouzivatelov**
+  - prikazy v prirodzenom jazyku + diagramy sluzieb + prevadzkove obmedzenia
+- **Poziadavky na system**
+  - strukturovany dokument s podrobnym popisom funkcii, sluzieb ...
+  - definuje, co sa ma realizovat
+
+#### Funkcionalne poziadavky
+- vypisy sluzieb, ktore ma system poskytovat, ako ma reagovat na konkretne vstupy
+- mozu uviest, co by system nemal/mal robit
+- popisuju funkcnost alebo systemove sluzby
+
+- **uplne poziadavky** => popisy vsetkych pozadovanych zariadeni
+- **konzistentne** => popisoch by nemali byt konfliky/rozpory
+
+#### Domenove poziadavky
+- sluzby a obmedzenia systemu z oblasti prevadzky
+
+#### Nefunkcionalne poziadavky(NP)
+- obmedzenia sluzieb alebo funkcii ponukanych systemom(casove obmedzenia, obmedzenia procesu vyvoja, ...)
+- definuju vlastnosti systemyu a obmedzenia **aky by mal system byt**
+
+
+### Kvalifikacia Nefunkcionalnych poziadaviek
+
+##### Poziadavky na produkt
+- specifikuju ze sa produkt musi spravat urcitym sposobom
+
+##### Organizacne poziadavky
+- su dosledkom organizacnych politik a postupov
+
+##### Externe poziadavky
+- vyplyvaju z faktorov, ktore su externe pre system a proces jeho vyvoja
+
+- **ciel** => vseobecny zamer pouzivatela
+- **overitelna nefunkcionalna poziadavka**
+
+#### Metriky na specifikovanie NP
+- **rychlost**
+- **velkost**
+- **jednoduchost pouzivania**
+- **spolahlivost**
+- **robustnost**
+- **prenosnost**
+
+
+#### Inziniersky proces na specifikaciu poziadaviek
+- **ziskavanie poziadaviek**
+- **analyza poziadaviek**
+- **validacia poziadaviek**
+- **riadenie poziadaviek**
+
+#### Dokument s poziadavkami na SW
+- nieje dizajnovany dokument
+- mal by stanovit, co by mal system robit
+
+#### Kontrolne kontroly
+- **overitelnost** => je poziadavka testovatelna?
+- **zrozumitelnost** => je poziadavka spravne pochopena?
+- **vysledovatelnost** => je jasne uvedeny dovod poziadavky?
+- **prisposobitelnost** => da sa poziadavka zmenit?
+
+#### Planovanie Manazmentu poziadaviek
+- identifikacia poziadaviek
+- proces riadenia zmien
+- politiky sledovatelnosti => difinuju vztahy medzi poziadavkami
+- podpora nastrojov
+
+#### Riadenei zmeny poziadaviek
+- rozhodovanie, ci by sa mala akceptovat zmena poziadaviek
+- analyza problemu a specifikacia zmeny
+- analyza zmien a kalkulacia
+- implementaci zmeny
