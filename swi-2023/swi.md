@@ -303,4 +303,88 @@
 - rozhodovanie, ci by sa mala akceptovat zmena poziadaviek
 - analyza problemu a specifikacia zmeny
 - analyza zmien a kalkulacia
-- implementaci zmeny
+- implementacia zmeny
+
+## Prednaska 5
+
+
+### **Modelovanie systému**
+
+1. *Systémové modelovanie* je proces vytvárania abstraktných modelov systému, pričom každý model predstavuje iný pohľad na daný systém.
+2. *UML* (Unified Modeling Language) je vizuálny grafický jazyk, vyvinutý Boochom, Rumbaughom a Jacobsonom. UML slúži k vizualizácii, špecifikácii, konštrukcii a dokumentácii softvérových systémov. Podľa definície Object Management Group (OMG) je UML štandardizovaným spôsobom zápisu plánov systému, ktorý zahŕňa koncepčné prvky a konkrétne prvky.
+
+### UML
+
+- Unified (Booch , Rumbaugh , Jacobson)
+- Modeling (vizuálny, grafický)
+- Language (gramatika, syntax, sémantika)
+
+### **Systémové perspektívy:**
+
+- *Externá perspektíva:* Modeluje kontext alebo prostredie systému z vonkajšieho hľadiska.
+- *Interakčná perspektíva:* Modeluje interakcie medzi systémom a jeho prostredím.
+- *Štrukturálna perspektíva:* Modeluje organizáciu systému a štruktúru údajov, ktoré systém spracováva.
+- *Perspektíva správania:* Modeluje dynamické správanie systému a jeho reakcie na udalosti.
+
+### **Typy diagramov UML:**
+
+- *Diagramy aktivít:* Zobrazujú činnosti spojené s procesmi a spracovaním údajov.
+- *Diagramy prípadov použitia:* Zobrazujú interakcie medzi systémom a jeho používateľmi.
+- *Sekvenčné diagramy:* Zobrazujú interakcie medzi aktérmi a systémom.
+- *Diagramy tried:* Zobrazujú triedy objektov v systéme a vzťahy medzi nimi.
+- *Stavové diagramy:* Ukazujú, ako systém reaguje na udalosti.
+
+### **Použitie grafických modelov:**
+
+- Uľahčujú diskusiu o existujúcom alebo navrhovanom systéme, aj keď nie sú úplné.
+- Slúžia ako dokumentácia existujúceho systému, aj keď nemusia byť úplné.
+- Môžu byť použité na podrobný popis systému a generovanie implementácie, ak sú správne a úplné.
+
+### **(1) Externá perspektíva - Kontextové modely**
+
+- Kontextové modely sa používajú na ilustráciu operačného kontextu systému a ukazujú, čo sa nachádza mimo jeho hraníc.
+- Architektonické modely ukazujú systém a jeho vzťahy s ostatnými systémami.
+
+### **(2) Procesná perspektíva**
+
+- Procesné modely odhaľujú, ako sa vyvíjaný systém používa v širších obchodných procesoch.
+- Na definovanie sa môžu použiť diagramy aktivít UML, ako sú modely podnikových procesov (workflow) a modely transformácií údajov (dataflow).
+
+### **(3) Interakčné modely**
+
+- Modelovanie interakcie používateľov je dôležité pre identifikáciu požiadaviek používateľov.
+- Modelovanie interakcie medzi systémami pomáha identifikovať komunikačné problémy.
+- Modelovanie interakcie komponentov nám pomáha posúdiť, či navrhovaná štruktúra systému pravdepodobne poskytne požadovaný výkon a spoľahlivosť.
+- Na modelovanie interakcií sa používajú UML diagramy prípadov použitia a diagramy sekvencií a komunikácie.
+
+#### **Sekvenčné diagramy**
+
+- Sekvenčné diagramy sú súčasťou UML a používajú sa na modelovanie interakcií medzi aktérmi a objektmi v rámci systému.
+
+### **(4) Štrukturálne modely**
+
+- Štrukturálne modely softvéru zobrazujú organizáciu systému z hľadiska komponentov, ktoré tvoria tento systém a ich vzťahy.
+
+#### **Diagramy tried**
+
+- Diagramy tried sa používajú pri vývoji objektovo orientovaného modelu systému na zobrazenie tried v systéme a asociácií medzi týmito triedami.
+
+### **(5) Modely správania**
+
+- Behaviorálne modely opisujú dynamické správanie systému pri jeho vykonávaní a ukazujú, čo sa deje pri reakcii systému na vstupy z okolia.
+- Tieto stimuly sa rozdeľujú na údaje, ktoré musí systém spracovať, a udalosti, ktoré spúšťajú akcie v systéme.
+- Modely stavových strojov zobrazujú stavy systému ako uzly a udalosti ako prechody medzi týmito stavmi. Stavové diagramy sú súčasťou UML a slúžia na reprezentáciu modelov stavových strojov.
+
+#### **Modelom riadené inžinierstvo**
+
+- Modelom riadené inžinierstvo (MDE) je prístup k vývoju softvéru, kde hlavnými výstupmi vývojového procesu sú skôr modely ako programy.
+
+#### **Použitie modelom riadeného inžinierstva**
+
+- Modelom riadené inžinierstvo je stále v ranom štádiu vývoja a nie je jasné, či bude mať významný vplyv na prax softvérového inžinierstva.
+- Výhody zahŕňajú schopnosť posúdiť systémy na vyšších úrovniach abstrakcie a možnosť automatického generovania kódu, čo ulahčuje prispôsobenie systému novým platformám.
+- Nevýhody zahŕňajú to, že modely nie sú vždy vhodné na implementáciu a náklady na vývoj nových prekladačov pre nové platformy môžu vyvážiť úspory z generovania kódu.
+
+#### **Architektúra riadená modelom**
+
+- Architektúra riadená modelom (MDA) bola predchodcom obecnejšieho modelom riadeného inžinierstva.
