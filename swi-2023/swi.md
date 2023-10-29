@@ -5,7 +5,7 @@
 ### Softverove inzinierstvo
 - zaobera sa teoriami, metodami a nastrojmi pre profesionalny vyvoj softveru(sw)
 - zaobera sa nakladovo-efektivnym vyvojom sw
-- je inzinierska disciplina, ktora sa zaobera vsetkymi aspektami vyroby softveru od pociatocnych stadii az po udrzbu po uvedeni do prevadzky
+- je inzinierska disciplina, ktora sa zaobera vsetkymi aspektmi vyroby softveru od pociatocnych stadii az po udrzbu po uvedeni do prevadzky
 
 ### Softver(sw)
 - sw produkty mozu byt vyvinute pre konkretneho zakaznika alebo trh
@@ -80,7 +80,7 @@
 
 ### Planom riadene procesy
 - vsetky procesne cinnosti vopred naplanovane (**planovane procesy**)
-- pokrok sa mera podla tohto planu
+- pokrok sa meria podla tohto planu
 
 ### agile procesy
 - prirastokove planovanie, jednoduchsie zmenit proces tak, aby odrazal meniace sa poziadavky zakaznikov
@@ -90,23 +90,23 @@
   - model riadeny planom, pre velke projeky
   - oddelene a odlisne fazy specifikacie a vyvoja:
     - **analyza a definicia poziadaviek**
-    - **navrh systemy a sw**
+    - **navrh systemu a sw**
     - **implementacia a testovanie jednotiek**
     - **integracia a testovanie systemu**
     - **prevadzka a udrzba**
-  - neflexibilne rozdelenie projektu na jednotlive etapy stazuje reakciu na zmenu
+  - NEVYHODY neflexibilne rozdelenie projektu na jednotlive etapy stazuje reakciu na zmenu
 - **postupny vyvoj**
   - specifikacia, vyvoj a validacia su prepojene navzajom
   - moze byt riadeny planom alebo agile
-  - znizuju sa naklady na prisposobenie zmenam
-  - jednoduchsi feedback, rychlejsie dodanie
-  - proces nieje viditelny, struktura systemu ma tendenciu sa degradovat
+  - VYHODY znizuju sa naklady na prisposobenie zmenam
+  - VYHODY jednoduchsi feedback, rychlejsie dodanie
+  - NEVYHODY proces nieje viditelny, struktura systemu ma tendenciu sa degradovat
 - **integracia a konfiguracia**
   - system je zostaveny z existujucich konfig. komponentov
   - moze byt riadeny planom alebo agile
-  - znizene naklady a rizika, pretoze menej sw sa vyvija od nuly
-  - ryclejsie dodanie a nasadenie systemu
-  - strata kontroly nad vyvojom opatovne pouzitych prvkov
+  - VYHODY znizene naklady a rizika, pretoze menej sw sa vyvija od nuly
+  - VYHODY rychlejsie dodanie a nasadenie systemu
+  - NEVYHODY strata kontroly nad vyvojom opatovne pouzitych prvkov
 
 ### Znizenie nakladov na prepracovanie
 - **predvidanie zmien**
@@ -116,11 +116,11 @@
 - **Systemove prototypovanie**
   - rychlo sa vyvinie verzia systemu, aby sa preverili poziadavky
   - tento pristup podporuje predvidanie zmien
-  - vylepsena pouzitelnost systemu, kvalita dizajnu, udrzatelnost
-  - prototyp nemusi obsahovat kontrolu/obnovu chyb co nie je dobre
+  - VYHODY vylepsena pouzitelnost systemu, kvalita dizajnu, udrzatelnost
+  - NEVYHODY prototyp nemusi obsahovat kontrolu/obnovu chyb, co nie je dobre
 - **inkrementalne dorucovanie**
   - systemove inkrementy sa dorucuju zakaznikovi na pripomienkovanie a experimentovanie => podporuje vyhybaniu sa zmenam a toleranciu
-  - prirastokove dourcovanie ma nizsie riziko celkoveho zlyhania projektu
+  - VYHODY prirastokove dourcovanie ma nizsie riziko celkoveho zlyhania projektu
 
 ### Procesy - urovne zrelosti sposobilosti
 - **lvl 1: pociatocne** => v podstate nekontrolovatelne
@@ -132,17 +132,17 @@
 ## Prednaska 3
 
 #### Rozdiely v sprave sw
-- **nehmotny produkt** => sw nieje vidiet
-- **jednorazove projekty** => problem predvidania problemu
+- sw je **nehmotny produkt** => sw nieje vidiet
+- mnohe sw projekty su **jednorazove projekty** => problem predvidania problemu
 
 #### Univerzalne manazerske cinnosti
 - **planovanie projektu**
   - za panovanie su zodpovedni projektovi manazeri
   - odhadovanie/planovanie vyvoja projektu a pridelovanie ludi k uloham
 - **riadenie rizik**
-  - projekt manazeri posudzuju rizika ktore mozu ovlyvnit projekt
+  - projektovi manazeri posudzuju rizika ktore mozu ovlyvnit projekt
 - **riadenie ludi**
-  - projekt manazeri musia vyberat ludi do svojho timu a zaviest sposoby prace ku efektivnemu timovemu vykonu
+  - projektovi manazeri musia vyberat ludi do svojho timu a zaviest sposoby prace ku efektivnemu timovemu vykonu
 
 ### Planovanie projektu
 - zahrna rozdelenie prace na casti a pridelenie ich clenom projektoveho timu, predvidanie problemov a priprava predbeznych rieseni
@@ -168,11 +168,11 @@
   - planovacia hra
 
 #### Planom riadeny vyvoj
-- je pristup k sw inzinierstvu, kde je proces vyvoja podrobne naplanovany
+- je pristup ku sw inzinierstvu, kde je proces vyvoja podrobne naplanovany
 - **projektovy plan** stanovuje:
-  - **zdroje** dostupne pre projekt
-  - **rozpis prac**
-  - **harmonogram** vykonavania prace
+  - **zdroje** dostupne pre projekt (KTO)
+  - **rozpis prac** (CO)
+  - **harmonogram** vykonavania prace (KEDY)
     - na zaklade kalendara
     - siete aktivit
 
@@ -180,9 +180,9 @@
 - zaobera sa identifikaciou a zostavovanim planov na minimalizaciu rizik
 
 #### Klasifikacia rizika
-- **rizika projektu** => ovlyvnit plan alebo zdroje
-- **rizika produktu** => ovlyvnit kvalitu alebo vykon SW
-- **rizika podnikatelske** => ovlyvnuju organizaciu, ktora vyvyja SW
+- **rizika projektu** => ovplyvnit plan alebo zdroje
+- **rizika produktu** => ovplyvnit kvalitu alebo vykon SW
+- **rizika podnikatelske** => ovplyvnuju organizaciu, ktora vyvyja SW
 
 #### Proces riadenia rizik
 - **identifikacia** => produktovych/obchodnych rizik
@@ -192,7 +192,7 @@
 
 #### Planovanie rizika
 - **strategie vyhybania sa** => pravdepodobnost vzniku rizika je znizena
-- **strategie minimalizacie** => znizi sa vlyz rizika na projekt
+- **strategie minimalizacie** => znizi sa vplyv rizika na projekt
 - **pohotovostne plany** => pre riesenie vznikuteho rizika
 
 ### Riadenie ludi
@@ -202,14 +202,15 @@
 - **orientovany na ulohy**
   - motivaciou je samotna praca (kazdy chce robit to svoje)
 - **sebaorientovany**
-  - motivaciou je praca na dosiahnutie individualneho ciela(zbohatnut)
+  - motivaciou je praca na dosiahnutie individualneho ciela (zbohatnut)
 - **orientovany na interakciu**
   - motivaciou je pritomnost spolupracovnikov
-  - ludia chodia do prace, pretoze to maju radi
+  - ludia chodia do prace, pretoze to maju radi :D
 
 #### skupinova sudrznost
-- kvalita skupiny vytvoria jej clenovia
-- tim sa od sebe navzajom uci , spoznavanie prace toho druheho
+VYHODY
+- kvalitu skupiny vytvoria jej clenovia
+- tim sa od seba navzajom uci, spoznavanie prace toho druheho
 - delia sa vedomosti, podporuje sa retaktoriny
 
 #### Efektivnost timu
@@ -240,18 +241,18 @@
 
 #### Funkcionalne poziadavky
 - vypisy sluzieb, ktore ma system poskytovat, ako ma reagovat na konkretne vstupy
-- mozu uviest, co by system nemal/mal robit
+- mozu uviest, co by system nemal/**mal robit**
 - popisuju funkcnost alebo systemove sluzby
 
 - **uplne poziadavky** => popisy vsetkych pozadovanych zariadeni
-- **konzistentne** => popisoch by nemali byt konfliky/rozpory
+- **konzistentne** => v popisoch by nemali byt konfliky/rozpory
 
 #### Domenove poziadavky
 - sluzby a obmedzenia systemu z oblasti prevadzky
 
 #### Nefunkcionalne poziadavky(NP)
-- obmedzenia sluzieb alebo funkcii ponukanych systemom(casove obmedzenia, obmedzenia procesu vyvoja, ...)
-- definuju vlastnosti systemyu a obmedzenia **aky by mal system byt**
+- obmedzenia sluzieb alebo funkcii ponukanych systemom (casove obmedzenia, obmedzenia procesu vyvoja, ...)
+- definuju vlastnosti systemu a obmedzenia **aky by mal system byt**
 
 
 ### Kvalifikacia Nefunkcionalnych poziadaviek
@@ -285,7 +286,7 @@
 
 #### Dokument s poziadavkami na SW
 - nieje dizajnovany dokument
-- mal by stanovit, co by mal system robit
+- **mal by stanovit, co** by mal system robit
 
 #### Kontrolne kontroly
 - **overitelnost** => je poziadavka testovatelna?
@@ -296,10 +297,10 @@
 #### Planovanie Manazmentu poziadaviek
 - identifikacia poziadaviek
 - proces riadenia zmien
-- politiky sledovatelnosti => difinuju vztahy medzi poziadavkami
+- politiky sledovatelnosti => definuju vztahy medzi poziadavkami
 - podpora nastrojov
 
-#### Riadenei zmeny poziadaviek
+#### Riadenie zmeny poziadaviek
 - rozhodovanie, ci by sa mala akceptovat zmena poziadaviek
 - analyza problemu a specifikacia zmeny
 - analyza zmien a kalkulacia
@@ -352,9 +353,9 @@
 
 ### **(3) Interakčné modely**
 
-- Modelovanie interakcie používateľov je dôležité pre identifikáciu požiadaviek používateľov.
-- Modelovanie interakcie medzi systémami pomáha identifikovať komunikačné problémy.
-- Modelovanie interakcie komponentov nám pomáha posúdiť, či navrhovaná štruktúra systému pravdepodobne poskytne požadovaný výkon a spoľahlivosť.
+- Modelovanie interakcie používateľov - je dôležité pre identifikáciu požiadaviek používateľov.
+- Modelovanie interakcie medzi systémami - pomáha identifikovať komunikačné problémy.
+- Modelovanie interakcie komponentov - nám pomáha posúdiť, či navrhovaná štruktúra systému pravdepodobne poskytne požadovaný výkon a spoľahlivosť.
 - Na modelovanie interakcií sa používajú UML diagramy prípadov použitia a diagramy sekvencií a komunikácie.
 
 #### **Sekvenčné diagramy**
@@ -372,7 +373,7 @@
 ### **(5) Modely správania**
 
 - Behaviorálne modely opisujú dynamické správanie systému pri jeho vykonávaní a ukazujú, čo sa deje pri reakcii systému na vstupy z okolia.
-- Tieto stimuly sa rozdeľujú na údaje, ktoré musí systém spracovať, a udalosti, ktoré spúšťajú akcie v systéme.
+- Tieto stimuly sa rozdeľujú na *údaje*, ktoré musí systém spracovať, a *udalosti*, ktoré spúšťajú akcie v systéme.
 - Modely stavových strojov zobrazujú stavy systému ako uzly a udalosti ako prechody medzi týmito stavmi. Stavové diagramy sú súčasťou UML a slúžia na reprezentáciu modelov stavových strojov.
 
 #### **Modelom riadené inžinierstvo**
@@ -382,8 +383,8 @@
 #### **Použitie modelom riadeného inžinierstva**
 
 - Modelom riadené inžinierstvo je stále v ranom štádiu vývoja a nie je jasné, či bude mať významný vplyv na prax softvérového inžinierstva.
-- Výhody zahŕňajú schopnosť posúdiť systémy na vyšších úrovniach abstrakcie a možnosť automatického generovania kódu, čo ulahčuje prispôsobenie systému novým platformám.
-- Nevýhody zahŕňajú to, že modely nie sú vždy vhodné na implementáciu a náklady na vývoj nových prekladačov pre nové platformy môžu vyvážiť úspory z generovania kódu.
+- VÝHODY zahŕňajú schopnosť posúdiť systémy na vyšších úrovniach abstrakcie a možnosť automatického generovania kódu, čo ulahčuje prispôsobenie systému novým platformám.
+- NEVÝHODY zahŕňajú to, že modely nie sú vždy vhodné na implementáciu a náklady na vývoj nových prekladačov pre nové platformy môžu vyvážiť úspory z generovania kódu.
 
 #### **Architektúra riadená modelom**
 
@@ -393,8 +394,8 @@
 
 ### **Architektonický dizajn**
 
-- Architektonický dizajn zaoberá organizáciou softvérového systému a jeho štruktúrou.
-- Výstupom architektonického návrhu je model architektúry, ktorý opisuje, ako je systém zorganizovaný a komunikujú jeho komponenty.
+- Architektonický dizajn zaoberá sa organizáciou softvérového systému a jeho štruktúrou.
+- Výstupom architektonického návrhu je model architektúry, ktorý opisuje, ako je systém organizovaný a komunikujú jeho komponenty.
 
 ### **Výhody explicitnej architektúry**
 
@@ -403,7 +404,7 @@
 - Systémová analýza:
     - Umožňuje analýzu, či systém môže splniť svoje nefunkčné požiadavky.
 - Opätovné použitie vo veľkom meradle:
-    - Architektúra môže byť opakovane použíteľná v rôznych systémoch.
+    - Architektúra môže byť opakovane použiteľná v rôznych systémoch.
 
 ### **Použitie architektonických modelov**
 
@@ -414,9 +415,9 @@
 
 ### **Architektonické reprezentácie**
 
-- Krabicové a čiarové diagramy sú veľmi abstraktné, ale užitočné pre komunikáciu a plánovanie projektov.
-- Niektorí tvrdia, že UML je vhodnou notáciou pre popis architektúr.
-- Architektonické popisné jazyky (ADL) boli vyvinuté, ale nie sú široko používané.
+- *Krabicové a čiarové diagramy* sú veľmi abstraktné, ale užitočné pre komunikáciu a plánovanie projektov.
+- Niektorí tvrdia, že *UML* je vhodnou notáciou pre popis architektúr.
+- *Architektonické popisné jazyky* (ADL) boli vyvinuté, ale nie sú široko používané.
 
 ### **Opätovné použitie architektúry**
 
@@ -426,10 +427,10 @@
 ### **Architektonické pohľady**
 
 - 4 + 1 pohľadový model softvérovej architektúry obsahuje:
-    - Logický pohľad (objekty alebo triedy objektov).
-    - Procesný pohľad (interagujúce procesy).
-    - Vývojový pohľad (rozloženie softvéru počas vývoja).
-    - Fyzický pohľad (hardvér systému a distribúcia softvérových komponentov medzi procesormi).
+    - *Logický pohľad* (objekty alebo triedy objektov).
+    - *Procesný pohľad* (interagujúce procesy).
+    - *Vývojový pohľad* (rozloženie softvéru počas vývoja).
+    - *Fyzický pohľad* (hardvér systému a distribúcia softvérových komponentov medzi procesormi).
     - Súvisiace prípady použitia alebo scenáre (+1).
 
 ### **Architektonické vzory**
@@ -438,11 +439,11 @@
 
 ### **(1) Organizácia systému**
 
-- Odráža základnú stratégiu štruktúrovania systému.
+- Odráža základnú stratégiu štrukturovania systému.
 - Najčastejšie sa používajú tri organizačné štýly:
-    - Štýl zdieľaného úložiska údajov
-    - Štýl zdieľaných služieb a serverov
-    - Abstraktný strojový alebo vrstvený štýl.
+    - Štýl *zdieľaného úložiska údajov*
+    - Štýl *zdieľaných služieb a serverov*
+    - Abstraktný *strojový alebo vrstvený* štýl.
 
 #### **(1.1) Vrstvená architektúra**
 
@@ -453,27 +454,27 @@
 
 #### **(1.2) Zdieľané úložisko údajov**
 
-- Subsystémy zdieľajú údaje cez centrálnu databázu alebo vlastné distribuované úložiská.
+- Subsystémy zdieľajú údaje cez *centrálnu databázu* alebo *vlastné distribuované úložiská*.
 - Model zdieľania úložiska sa používa na zdieľanie veľkého množstva údajov.
 
 #### **(1.3) Zdieľané služby a servery**
 
 - Model distribuovaného systému, ktorý zahrňuje údaje a spracovanie medzi rôznymi komponentmi.
 - Môže byť implementovaný na jednom počítači.
-- Obsahuje samostatné servery poskytujúce špecifické služby a klientov využívajúcich tieto služby.
+- Obsahuje samostatné *servery* poskytujúce špecifické služby a *klientov* využívajúcich tieto služby.
 
 ### **(2) Modulárne štýly rozkladu**
 
 - Štýly rozkladu (pod)systémov na moduly.
 - Modul je komponent systému, ktorý poskytuje služby iným komponentom, ale nepovažuje sa za samostatný systém.
 - Dva modulárne modely rozkladu:
-    - Objektový model, kde je systém rozložený na interagujúce objekty.
-    - Model potrubia alebo toku údajov, kde je systém rozložený na funkčné moduly transformujúce vstupy na výstupy.
+    - *Objektový model*, kde je systém rozložený na interagujúce objekty.
+    - *Model potrubia alebo toku údajov*, kde je systém rozložený na funkčné moduly transformujúce vstupy na výstupy.
 
 #### **(2.2) Architektúra potrubia a filtra**
 
 - Varianty tohto prístupu sú časté, najmä v systémoch na spracovanie údajov.
-- Dávkový sekvenčný model sa používa, keď sú transformácie postupné.
+- *Dávkový sekvenčný model* sa používa, keď sú transformácie postupné.
 
 #### **(3) Štýly ovládania**
 
