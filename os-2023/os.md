@@ -606,3 +606,98 @@
     
 #### round robin AKA ide piesen do kola
   - jednoduchá politika plánovania, ktorá postupne spúšťa každý proces
+
+
+## Kapitola 6
+
+#### Lock
+- technika na kontrolu subeznosti
+- v jeden cas moze lock drzat iba 1 CPU
+- chrani datove polozky
+- chrani invarianty
+- serializuje subezne operacie co moze zhorsit performance
+- pouziva sa na vyhnutie sa raceom(pretekom)
+- jeho funkciou je ze iba jedno cpu moze vykonat instrukciu v kritickej oblasti v jeden cas
+
+#### Kriticka oblast
+- kod medzi acquire a release locku
+
+#### Race(pretek)
+- situacia pri ktorej je miesto v pamati ku ktorej je pristupovane subezne a aspon jeden pristup je zapis
+- casto znakom bugu
+- vysledok raceu je dany tym ako compiler generuje machine code, timingom dvoch CPU, a prioritou operacii na manipulaciu s pamatou
+
+#### Conflict
+- ak viacero procesov chce jeden lock v rovnaky cas alebo lock zaziva spor
+
+#### Spinlock
+- reprezentovany ako **struct spinlock**
+- ak je premenna **locked** v tejto strukture 1 tak zamok je drzany, ak 0 tak zamok je volny
+- ma vyuzitie pri kratkych operaciach
+
+#### amoswap r, a
+- precita hodnotu na adrese **a**
+- zapise obsah registra **r** na adresu **a**
+- vlozi precitanu hodnotu do registra **r**
+- vymeni obsah registra a adresy pamate
+- toto sa vykonava atomicky s pouzitim specialneho hardwaru ktory zabranuje aby ine CPU pouzivalo adresu pamate medzi read a write
+
+#### acquire
+- vyuziva **amoswap** v loope dokial sa mu nepodari ziskat lock
+- kazda iteracia vymiena 1 do **lk->locked** a overuje predchadzajucu hodnotu
+- ak je predchadzajuca hodnota 0 ziskali sme lock a nastavili sme **lk->locked** na 1
+- ak je predchadzajuca hodnota 1 ine CPU vyuziva lock a hodnota **lk->locked** ostava 1
+- po ziskani locku zaznamenava pre debug ktore cpu ziskalo lock
+- **lk->cpu** je chranene lockom a musi byt zmenene az je ziskany lock
+
+#### release
+- vymaze **lk->cpu**
+- nastavi **lk->locked** na 0 pomocou amoswapu
+
+#### big kernel lock
+- musi byt acquired pri vstupovani do kernelu a releasnuty po opusteni kernelu
+- obetuje paralelizmus(iba jedno CPU moze byt v kerneli)
+
+#### fine-grained locking
+- pre kazdy file zvlast lock
+
+#### Deadlock
+- locky musia byt vzdy ziskavane v rovnakom poradi
+- vznikne napr. mame lock A a B, CPU1 chce najprv A a potom B, CPU2 chce najprv B a potom A
+-  ked CPU1 ziska A a v tom istom case CPU2 ziska B tak nastane situaci ked CPU1 s A v drzani chce ziskat B ale B je drzane CPU2 ktore sa snazi ziskat A
+-  takto CPU1 blokuje CPU2 a CPU2 blokuje CPU1
+  
+#### Recursive locks(re-entanta locks)
+- ak proces uz drzi lock a ten proces sa pokusi acquire lock co uz drzi kernel by povolil ziskanie rovnakeho locku namiesto vyvolania panic
+
+#### spin locks and interupts
+- CPU musi mat prerusenia vypnute ak drzi nejaky lock
+- ked CPU ziska lock xv6 vypne prerusenia na danom CPU
+- prerusenie moze nastat na inom CPU v tom pripade prerusenie caka v acquire na to az CPU co drzi lock ho releasne
+- xv6 znovu povoli prerusenia ked CPU nedrzi ziadny spinlock
+- xv6 robi zaznamy aby sa vysporiadalo s nested critical area **acquire vola push_off pred nastavenim lk->locked** a **release vola pop_off po vzdani sa locku**
+
+#### xv6
+- intr_on zapne interupty
+- intr_off vypne interupty
+
+#### memory model
+- subor pravidiel ktore pomahaju programatorom pri vyvoji subeznych aplikacii
+-  a poskytovanim primitives na pomoc s prekupovanim
+
+#### _sync_synchronize()
+- pamatova bariera
+- zabranuje kompilatoru a hardwaru preusporiadavat nacitavania a ukladania 
+- bariery acquire a release v xv6 vynucuju poradia skoro v kazdom pripade
+
+#### Sleeplock
+- ked sa caka na acquire tak sa proces vzda CPU
+- acquiresleep sa vzda CPU ked caka na lock
+- sleeplock ma premmenu locked ktora je chranena spinlockom
+- volanie sleep z acquiresleep releasne spinlock a vzda sa CPU
+- prerusenia su povolene(nemoze byt pouzity v handleroch preruseni pretoze by sa mohol vzdat CPU)
+- nemoze byt pouzity v kritickej sekcii spinlocku(ale spinlock moze byt pouzity v kritickej sekcii sleeplocku)
+- ma vyuzitie pri dlhsich operaciach
+
+#### POSIX(Pthreds)
+- umoznuje uzivatelskemu procesu  mat viac vlakien sucasne na roznych CPU
