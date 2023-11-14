@@ -1,17 +1,30 @@
 # OS Poznamky
 
 ### Obsah
- - [Kapitola 1](os.md#prednaska-1)
- - [Kapitola 2](os.md#kapitola-2)
+<details><summary>Kapitola 1</summary>
+
+   - [Uvod](os.md#prednaska-1)
+   - [Abstrakcia HW](os.md#abstrakcia-hw)
+   - [Poziadavky na OS](os.md#poziadavky-na-os)
+  </details>
+<details><summary>Kapitola 2</summary>
+
+   - [Uvod](os.md#kapitola-2)
    - [Kniznicny pristup](os.md#kniznicny-pristup)
    - [Monoliticke jadro](os.md#monoliticke-jadro)
    - [Mikrokernel](os.md#mikrokernel)
    - [Proces](os.md#proces)
- - [Kapitola 3](os.md#kapitola-3)
+  </details>
+<details><summary>Kapitola 3</summary>
+
+   - [Uvod](os.md#kapitola-3)
    - [Tabulky stranok](os.md#tabulky-stranokpage-tables-pt)
    - [Page table entry (PTE)](os.md#page-table-entry-pte)
    - [Preklad na fyzicku adresu](os.md#preklad-na-fyzicku-adresu-v-troch-krokoch)
- - [Kapitola 4](os.md#kapitola-4)
+  </details>
+<details><summary>Kapitola 4</summary>
+
+   - [Uvod](os.md#kapitola-4)
    - [Pasca](os.md#pasca-trap)
      - [V user space](os.md#pascevynimky-v-user-space)
      - [V kernel space](os.md#pasce-z-kernel-space)
@@ -21,11 +34,17 @@
    - [Ecall](os.md#ecall)
    - [Kernelvec](os.md#kernelvec)
    - [Kerneltrap](os.md#kerneltrap)
- - [Kapitola 4.6](os.md#kapitola-46)
+  </details>
+<details><summary>Kapitola 4.6</summary>
+
+   - [Uvod](os.md#kapitola-46)
    - [COW fork](os.md#copy-on-write-cow-fork)
    - [Chyby stranok](os.md#chyby-stranok)
    - [Leniva alokacia](os.md#lazy-alocation)
- - [Kapitola 7](os.md#kapitola-7)
+  </details>
+<details><summary>Kapitola 7</summary>
+
+   - [Uvod](os.md#kapitola-7)
    - [Scheduler](os.md#schedulerplanovac)
    - [Swtch](os.md#swtch)
    - [Sched](os.md#sched)
@@ -33,7 +52,10 @@
    - [Sleep a wakeup](os.md#sleep-and-wakeup-1)
    - [Wait, exit, kill](os.md#kod-wait-exit-kill)
    - [p->lock](os.md#p-lock)
- - [Kapitola 6](os.md#kapitola-6)
+  </details>
+<details><summary>Kapitola 6</summary>
+
+   - [Uvod](os.md#kapitola-6)
    - [Race](os.md#racepretek)
    - [Spinlock](os.md#spinlock)
    - [acquire](os.md#acquire)
@@ -41,6 +63,7 @@
    - [Deadlock](os.md#deadlock)
    - [Prerusenia a lock](os.md#spin-locks-and-interupts)
    - [Sleeplock](os.md#sleeplock)
+  </details>
 
 ## Prednaska 1
 
