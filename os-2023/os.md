@@ -33,6 +33,14 @@
    - [Sleep a wakeup](os.md#sleep-and-wakeup-1)
    - [Wait, exit, kill](os.md#kod-wait-exit-kill)
    - [p->lock](os.md#p-lock)
+ - [Kapitola 6](os.md#kapitola-6)
+   - [Race](os.md#racepretek)
+   - [Spinlock](os.md#spinlock)
+   - [acquire](os.md#acquire)
+   - [release](os.md#release)
+   - [Deadlock](os.md#deadlock)
+   - [Prerusenia a lock](os.md#spin-locks-and-interupts)
+   - [Sleeplock](os.md#sleeplock)
 
 ## Prednaska 1
 
@@ -614,8 +622,8 @@
 - technika na kontrolu subeznosti
 - v jeden cas moze lock drzat iba 1 CPU
 - chrani datove polozky
-- chrani invarianty
-- serializuje subezne operacie co moze zhorsit performance
+- chrani invarianty(vlastnosti datovych struktur)
+- serializuje subezne operacie, co moze zhorsit performance
 - pouziva sa na vyhnutie sa raceom(pretekom)
 - jeho funkciou je ze iba jedno cpu moze vykonat instrukciu v kritickej oblasti v jeden cas
 
@@ -623,7 +631,7 @@
 - kod medzi acquire a release locku
 
 #### Race(pretek)
-- situacia pri ktorej je miesto v pamati ku ktorej je pristupovane subezne a aspon jeden pristup je zapis
+- situacia pri ktorej je miesto v pamati, ku ktorej je pristupovane subezne a aspon jeden pristup je zapis
 - casto znakom bugu
 - vysledok raceu je dany tym ako compiler generuje machine code, timingom dvoch CPU, a prioritou operacii na manipulaciu s pamatou
 
@@ -652,10 +660,10 @@
 
 #### release
 - vymaze **lk->cpu**
-- nastavi **lk->locked** na 0 pomocou amoswapu
+- nastavi **lk->locked** na 0 pomocou amoswapu (uvolni zamok)
 
 #### big kernel lock
-- musi byt acquired pri vstupovani do kernelu a releasnuty po opusteni kernelu
+- jednoduche jadro ma iba jeden zamok a ten musi byt acquired pri vstupovani do kernelu a releasnuty po opusteni kernelu
 - obetuje paralelizmus(iba jedno CPU moze byt v kerneli)
 
 #### fine-grained locking
@@ -666,9 +674,11 @@
 - vznikne napr. mame lock A a B, CPU1 chce najprv A a potom B, CPU2 chce najprv B a potom A
 -  ked CPU1 ziska A a v tom istom case CPU2 ziska B tak nastane situaci ked CPU1 s A v drzani chce ziskat B ale B je drzane CPU2 ktore sa snazi ziskat A
 -  takto CPU1 blokuje CPU2 a CPU2 blokuje CPU1
+-  pri implementacii jadra sa snazime vyhnut deadlocku
   
 #### Recursive locks(re-entanta locks)
-- ak proces uz drzi lock a ten proces sa pokusi acquire lock co uz drzi kernel by povolil ziskanie rovnakeho locku namiesto vyvolania panic
+- zamky s opakovanym vstupom (rekurzivne zamky)
+- ak proces uz drzi lock a ten proces sa pokusi acquire lock co uz drzi, kernel by povolil ziskanie rovnakeho locku namiesto vyvolania panic
 
 #### spin locks and interupts
 - CPU musi mat prerusenia vypnute ak drzi nejaky lock
@@ -693,11 +703,11 @@
 #### Sleeplock
 - ked sa caka na acquire tak sa proces vzda CPU
 - acquiresleep sa vzda CPU ked caka na lock
-- sleeplock ma premmenu locked ktora je chranena spinlockom
+- sleeplock ma premmenu locked, ktora je chranena spinlockom
 - volanie sleep z acquiresleep releasne spinlock a vzda sa CPU
 - prerusenia su povolene(nemoze byt pouzity v handleroch preruseni pretoze by sa mohol vzdat CPU)
 - nemoze byt pouzity v kritickej sekcii spinlocku(ale spinlock moze byt pouzity v kritickej sekcii sleeplocku)
 - ma vyuzitie pri dlhsich operaciach
 
 #### POSIX(Pthreds)
-- umoznuje uzivatelskemu procesu  mat viac vlakien sucasne na roznych CPU
+- umoznuje uzivatelskemu procesu mat viac vlakien sucasne na roznych CPU
