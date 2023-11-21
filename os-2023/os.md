@@ -765,6 +765,7 @@
   5. **Logging**
   6. **Buffer cache**
   7. **Disk**
+  
 ![vrstvy FS](https://miro.medium.com/v2/resize:fit:1236/1*-1vCCAWGYPBSjtVTHgD6QQ.png)
 - vyuziva **virtio harddrive**
 
