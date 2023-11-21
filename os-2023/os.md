@@ -809,12 +809,12 @@ odkazujúce na tento inode
 - ma aj funkcie *dirlookup*, *dirlink*, ...
 
 #### Pathname layer
-- poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
+- poskytuje hierarchicke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
 - najdenie nazvu cesty zahrna postupnost volani dirlookup
 - mozu nastat problematicke situacie:
   - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
   - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
-- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzy lock)
+- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzi lock)
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
