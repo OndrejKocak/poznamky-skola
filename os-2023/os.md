@@ -701,3 +701,42 @@
 
 #### POSIX(Pthreds)
 - umoznuje uzivatelskemu procesu  mat viac vlakien sucasne na roznych CPU
+
+## Kapitola 8
+
+#### File system
+- ucelom file systemu je organizovat a ukladat data
+- musi podporovat **crash recovery**(ak system crashne tak po restarte musi normalne fungovat)
+- viacej procesov moze fungovat na file systeme sucasne
+- pristup k disku je pomalsi ako k pamati(ramke)
+- xv6 implementacia **7 vrstiev**
+  1. **File descriptor**
+  2. **Path name**
+  3. **Directory**
+  4. **Inode**
+  5. **Logging**
+  6. **Buffer cache**
+  7. **Disk**
+- vyuziva **virtio harddrive**
+
+#### Disk layer
+- cita a zapisuje bloky na virtio hard drive
+
+#### Buffer cache layer
+- uklada diskove bloky do cache pamate a synchronizuje pristup k nim, zaroven sa stara o to aby v jeden cas mohol iba jeden kernel proces upravat data ulozene v urcitom bloku
+
+#### Logging layer
+- umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
+
+#### Inode layer
+- poskytuje individualne subory kazdy reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru.
+
+#### Directory layer
+- implementuje kazdy adresar ako specialny typ **inode** ktorych obsahom je postupnost poloziek adresara, pricom kazda obsahuje **meno suboru** a **i-number**
+
+#### Pathname layer
+- poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
+
+#### File descriptor layer
+- abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
+
