@@ -773,7 +773,7 @@
 - cita a zapisuje bloky na virtio hard drive
 
 #### Buffer cache layer
-- uklada diskove bloky do cache pamate a synchronizuje pristup k nim, zaroven sa stara o to aby v jeden cas mohol iba jeden kernel proces upravat data ulozene v urcitom bloku
+- uklada diskove bloky do cache pamate a synchronizuje pristup k nim, zaroven sa stara o to aby v jeden cas mohol iba jeden kernel proces upravovat data ulozene v urcitom bloku
 - uklada oblubene bloky do cache pamate, aby sa nemuseli znova nacitat z pomaleho disku
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
