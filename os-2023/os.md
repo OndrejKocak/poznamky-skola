@@ -777,7 +777,7 @@
 - uklada oblubene bloky do cache pamate, aby sa nemuseli znova nacitat z pomaleho disku
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
-- ja dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku
+- je dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku
 
 #### Logging layer
 - obnovenie po zlyhani
@@ -809,12 +809,12 @@ odkazujúce na tento inode
 - ma aj funkcie *dirlookup*, *dirlink*, ...
 
 #### Pathname layer
-- poskytuje hierarchicke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
+- poskytuje hierarchicke nazvy ciest(*"/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt"*) a riesi ich rekurzivnym vyhladavanim
 - najdenie nazvu cesty zahrna postupnost volani dirlookup
 - mozu nastat problematicke situacie:
   - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
   - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
-- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzi lock)
+- xv6 sa takymto situaciam vyhyba pouzivanim **zamkov** (to prve vlanku drzi lock)
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
