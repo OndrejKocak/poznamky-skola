@@ -765,6 +765,7 @@
   5. **Logging**
   6. **Buffer cache**
   7. **Disk**
+![vrstvy FS](https://miro.medium.com/v2/resize:fit:1236/1*-1vCCAWGYPBSjtVTHgD6QQ.png)
 - vyuziva **virtio harddrive**
 
 #### Disk layer
@@ -798,6 +799,7 @@ odkazujúce na tento inode
 - udaje o inódoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
 - prvých 12 kB (NDIRECT) súboru je možné načítať z blokov uvedených v inode
 - ďalších 256 kB (NINDIRECT) je možné načítať len po kontrole nepriameho bloku
+![inode addr](https://miro.medium.com/v2/resize:fit:1400/1*5QIG1Nr0_n3b7Z68nHp6zg.png)
 
 #### Directory layer
 - implementuje kazdy adresar ako specialny typ **inode** ktorych obsahom je postupnost poloziek adresara, pricom kazda obsahuje **meno suboru** a **i-number** (unikatne cislo suboru na disku)
@@ -823,6 +825,7 @@ odkazujúce na tento inode
 - najmensia adresovatelna jednotka pri praci s diskom je 1 sektor (512-bajtov)
 - os xv6 pouziva bloky velkosti 1KB (2 sektory)
 - disk v xv6 sa sklada z niekolkych blokov: **boot | super | log | inodes | bitmap | data...data**
+![FS struktura](https://miro.medium.com/v2/resize:fit:1400/1*a6AbidN2wAw9LYfpRGi94A.png)
 
 #### Block allocator
 - blokovy alokator v Xv6 udržiava voľnú bitmapu na disku s jedným bitom na blok
