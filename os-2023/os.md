@@ -752,7 +752,7 @@
 
 ## Kapitola 8
 
-#### File system
+#### File system (FS)
 - ucelom file systemu je organizovat a ukladat data
 - musi podporovat **crash recovery**(ak system crashne tak po restarte musi normalne fungovat)
 - viacej procesov moze fungovat na file systeme sucasne
@@ -777,7 +777,7 @@
 - uklada oblubene bloky do cache pamate, aby sa nemuseli znova nacitat z pomaleho disku
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
-- ja dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku
+- ja dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
 
 #### Logging layer
 - obnovenie po zlyhani
@@ -794,6 +794,8 @@
 odkazujúce na tento inode
 - pole ref = počet ukazovateľov C odkazujúcich na inode
 - **itable.lock** chráni invariant, že inód je prítomný v tabuľke inódov najviac raz
+- **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
+- **iput** releasnutie pointera na inode(modifikuje ref count)
 
 #### Obsah inode
 - struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
@@ -810,11 +812,11 @@ odkazujúce na tento inode
 
 #### Pathname layer
 - poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
-- najdenie nazvu cesty zahrna postupnost volani dirlookup
+- najdenie nazvu cesty zahrna postupnost volani **dirlookup** na konci vracia zodpovedajuci **inode**
 - mozu nastat problematicke situacie:
   - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
   - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
-- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzy lock)
+- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzi lock)
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
@@ -827,13 +829,16 @@ odkazujúce na tento inode
 - os xv6 pouziva bloky velkosti 1KB (2 sektory)
 - disk v xv6 sa sklada z niekolkych blokov: **boot | super | log | inodes | bitmap | data...data**
 ![FS struktura](https://miro.medium.com/v2/resize:fit:1400/1*a6AbidN2wAw9LYfpRGi94A.png)
+- **super** obsahuje program **mkfs** ktory vytvara pociatocny file system
 
 #### Block allocator
-- blokovy alokator v Xv6 udržiava voľnú bitmapu na disku s jedným bitom na blok
+- blokovy alokator v Xv6 udržiava voľnú bitmapu na disku s jedným bitom na blok(0 blok je volny, 1 blok sa vyuziva)
 - blokovy alokator ma 2 funkcie: **balloc** alokuje novy blok na disku a **bfree** uvolni blok
 
 #### Systemove volania
 - **sys_link** a **sys_unlink** upravujú adresáre, vytvárajú alebo odstraňujú odkazy na inody
+- **create** vytvara nove meno pre novy inode(ulahcuje implementaciu **sys_open, sys_mkdir, sys_mknod**)
+- **sys_pipe** prepaja implementaciu **pipe** s FS tym ze umoznuje vytvorit pipe pair
 
 #### Realny svet
 - vyrovnavacia pamat ma v reálnom OS rovnaké účely: ukladanie do vyrovnávacej pamäte a synchronizácia prístupu na disk
