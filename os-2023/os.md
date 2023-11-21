@@ -777,7 +777,7 @@
 - uklada oblubene bloky do cache pamate, aby sa nemuseli znova nacitat z pomaleho disku
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
-- ja dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
+- je dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
 
 #### Logging layer
 - obnovenie po zlyhani
@@ -789,17 +789,16 @@
   - moze odkazovat na dátovú štruktúru na disku
   - moze odkazovat na in-memory inode
 - kazdy inode ma jedinecne inumber
-- jadro uchováva množinu aktívnych inódov v pamäti v itable
-- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C 
-odkazujúce na tento inode
+- jadro uchováva množinu aktívnych inodov v pamäti v itable
+- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C odkazujúce na tento inode
 - pole ref = počet ukazovateľov C odkazujúcich na inode
-- **itable.lock** chráni invariant, že inód je prítomný v tabuľke inódov najviac raz
+- **itable.lock** chráni invariant, že inode je prítomný v tabuľke inodov najviac raz
 - **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
 - **iput** releasnutie pointera na inode(modifikuje ref count)
 
 #### Obsah inode
 - struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
-- udaje o inódoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
+- udaje o inodoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
 - prvých 12 kB (NDIRECT) súboru je možné načítať z blokov uvedených v inode
 - ďalších 256 kB (NINDIRECT) je možné načítať len po kontrole nepriameho bloku
 ![inode addr](https://miro.medium.com/v2/resize:fit:1400/1*5QIG1Nr0_n3b7Z68nHp6zg.png)
@@ -812,13 +811,13 @@ odkazujúce na tento inode
 
 #### Pathname layer
 
-- poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
+- poskytuje hierarchycke nazvy ciest (*"/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt"*) a riesi ich rekurzivnym vyhladavanim
 - najdenie nazvu cesty zahrna postupnost volani **dirlookup** na konci vracia zodpovedajuci **inode**
 
 - mozu nastat problematicke situacie:
   - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
   - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
-- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzi lock)
+- xv6 sa takymto situaciam vyhyba pouzivanim **zamkov** (to prve vlakno drzi lock)
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
