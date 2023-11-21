@@ -811,8 +811,10 @@ odkazujúce na tento inode
 - ma aj funkcie *dirlookup*, *dirlink*, ...
 
 #### Pathname layer
+
 - poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
 - najdenie nazvu cesty zahrna postupnost volani **dirlookup** na konci vracia zodpovedajuci **inode**
+
 - mozu nastat problematicke situacie:
   - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
   - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
