@@ -789,15 +789,14 @@
   - moze odkazovat na dátovú štruktúru na disku
   - moze odkazovat na in-memory inode
 - kazdy inode ma jedinecne inumber
-- jadro uchováva množinu aktívnych inódov v pamäti v itable
-- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C 
-odkazujúce na tento inode
+- jadro uchováva množinu aktívnych inodov v pamäti v itable
+- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C odkazujúce na tento inode
 - pole ref = počet ukazovateľov C odkazujúcich na inode
-- **itable.lock** chráni invariant, že inód je prítomný v tabuľke inódov najviac raz
+- **itable.lock** chráni invariant, že inode je prítomný v tabuľke inodov najviac raz
 
 #### Obsah inode
 - struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
-- udaje o inódoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
+- udaje o inodoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
 - prvých 12 kB (NDIRECT) súboru je možné načítať z blokov uvedených v inode
 - ďalších 256 kB (NINDIRECT) je možné načítať len po kontrole nepriameho bloku
 ![inode addr](https://miro.medium.com/v2/resize:fit:1400/1*5QIG1Nr0_n3b7Z68nHp6zg.png)
