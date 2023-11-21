@@ -733,8 +733,9 @@
 - ma vyuzitie pri dlhsich operaciach
 
 #### POSIX(Pthreds)
-<<<<<<< HEAD
 - umoznuje uzivatelskemu procesu  mat viac vlakien sucasne na roznych CPU
+- umoznuje uzivatelskemu procesu mat viac vlakien sucasne na roznych CPU
+  
 
 ## Kapitola 8
 
@@ -773,7 +774,3 @@
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
-
-=======
-- umoznuje uzivatelskemu procesu mat viac vlakien sucasne na roznych CPU
->>>>>>> b679501e4dee516df6ebb61e2e6cf42aa4ace5fe
