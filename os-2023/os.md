@@ -64,6 +64,19 @@
    - [Prerusenia a lock](os.md#spin-locks-and-interupts)
    - [Sleeplock](os.md#sleeplock)
   </details>
+  <details><summary>Kapitola 8</summary>
+
+   - [Uvod](os.md#kapitola-8)
+   - [Disk vrstva](os.md#disk-layer)
+   - [Buffer cache vrstva](os.md#buffer-cache-layer)
+   - [Logging vrstva](os.md#logging-layer)
+   - [Inode vrstva](os.md#inode-layer)
+   - [Directory vrstva](os.md#directory-layer)
+   - [Pathname vrstva](os.md#pathname-layer)
+   - [File descriptor vrstva](os.md#file-descriptor-layer)
+   - [Disky v xv6](os.md#disky)
+   - [Block allocator](os.md#block-allocator)
+  </details>
 
 ## Prednaska 1
 
@@ -744,7 +757,7 @@
 - musi podporovat **crash recovery**(ak system crashne tak po restarte musi normalne fungovat)
 - viacej procesov moze fungovat na file systeme sucasne
 - pristup k disku je pomalsi ako k pamati(ramke)
-- xv6 implementacia **7 vrstiev**
+- xv6 implementacia **7 vrstiev** suboroveho systemu:
   1. **File descriptor**
   2. **Path name**
   3. **Directory**
@@ -752,6 +765,8 @@
   5. **Logging**
   6. **Buffer cache**
   7. **Disk**
+  
+![vrstvy FS](https://miro.medium.com/v2/resize:fit:1236/1*-1vCCAWGYPBSjtVTHgD6QQ.png)
 - vyuziva **virtio harddrive**
 
 #### Disk layer
@@ -759,18 +774,68 @@
 
 #### Buffer cache layer
 - uklada diskove bloky do cache pamate a synchronizuje pristup k nim, zaroven sa stara o to aby v jeden cas mohol iba jeden kernel proces upravat data ulozene v urcitom bloku
+- uklada oblubene bloky do cache pamate, aby sa nemuseli znova nacitat z pomaleho disku
+- sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
+- obsahuje aj funkcie *binit*, *bget*, ...
+- ja dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku
 
 #### Logging layer
+- obnovenie po zlyhani
 - umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
 
 #### Inode layer
-- poskytuje individualne subory kazdy reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru.
+- poskytuje individualne subory kazdy reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru
+- **inode** moze mat 2 vyznamy:
+  - moze odkazovat na dátovú štruktúru na disku
+  - moze odkazovat na in-memory inode
+- kazdy inode ma jedinecne inumber
+- jadro uchováva množinu aktívnych inódov v pamäti v itable
+- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C 
+odkazujúce na tento inode
+- pole ref = počet ukazovateľov C odkazujúcich na inode
+- **itable.lock** chráni invariant, že inód je prítomný v tabuľke inódov najviac raz
+
+#### Obsah inode
+- struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
+- udaje o inódoch su v blokoch uvedených v poli **inode addr** - toto pole sa deli na *NDIRECT* a *NINDIRECT*
+- prvých 12 kB (NDIRECT) súboru je možné načítať z blokov uvedených v inode
+- ďalších 256 kB (NINDIRECT) je možné načítať len po kontrole nepriameho bloku
+![inode addr](https://miro.medium.com/v2/resize:fit:1400/1*5QIG1Nr0_n3b7Z68nHp6zg.png)
 
 #### Directory layer
-- implementuje kazdy adresar ako specialny typ **inode** ktorych obsahom je postupnost poloziek adresara, pricom kazda obsahuje **meno suboru** a **i-number**
+- implementuje kazdy adresar ako specialny typ **inode** ktorych obsahom je postupnost poloziek adresara, pricom kazda obsahuje **meno suboru** a **i-number** (unikatne cislo suboru na disku)
+- jeho inode má typ T_DIR a jeho údaje sú sekvenciou položiek adresára
+- každá jeho položka je struct **dirent**, ktorá obsahuje názov a číslo inódu
+- ma aj funkcie *dirlookup*, *dirlink*, ...
 
 #### Pathname layer
 - poskytuje hierarchycke nazvy ciest("/home/ondrej/tajnyPriecinok/tajnyPodPriecinok/tajnySubor.txt") a riesi ich rekurzivnym vyhladavanim
+- najdenie nazvu cesty zahrna postupnost volani dirlookup
+- mozu nastat problematicke situacie:
+  - kým jedno jadrové vlákno hľadá cestu, iné vlákno môže meniť strom adresárov
+  - môže prehľadávať adresár, ktorý bol odstránený iným vláknom jadra
+- xv6 sa pred takymto situacia vyhyba, pouzivanim **zamkov** (to prve vlanku drzy lock)
 
 #### File descriptor layer
 - abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
+- xv6 dáva každému procesu vlastnú tabuľku otvorených súborov alebo deskriptorov súborov
+- všetky otvorené súbory v systéme sú uložené v globálnej tabuľke súborov **ftable**
+- ftable ma funkcie na pridelenie súboru (*filealloc*), vytvorenie duplicitnej referencie (*filedup*), uvoľnenie referencie (*fileclose*)
+
+#### Disky
+- najmensia adresovatelna jednotka pri praci s diskom je 1 sektor (512-bajtov)
+- os xv6 pouziva bloky velkosti 1KB (2 sektory)
+- disk v xv6 sa sklada z niekolkych blokov: **boot | super | log | inodes | bitmap | data...data**
+![FS struktura](https://miro.medium.com/v2/resize:fit:1400/1*a6AbidN2wAw9LYfpRGi94A.png)
+
+#### Block allocator
+- blokovy alokator v Xv6 udržiava voľnú bitmapu na disku s jedným bitom na blok
+- blokovy alokator ma 2 funkcie: **balloc** alokuje novy blok na disku a **bfree** uvolni blok
+
+#### Systemove volania
+- **sys_link** a **sys_unlink** upravujú adresáre, vytvárajú alebo odstraňujú odkazy na inody
+
+#### Realny svet
+- vyrovnavacia pamat ma v reálnom OS rovnaké účely: ukladanie do vyrovnávacej pamäte a synchronizácia prístupu na disk
+- xv6 je naivný, pokiaľ ide o zlyhania disku: ak operácia disku zlyhá, xv6 spanikári (viac o zlyhaniach v dalsej prednaske)
+- xv6 vyžaduje, aby sa súborový systém zmestil na jedno diskové zariadenie a nemenil veľkosť
