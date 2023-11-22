@@ -778,20 +778,20 @@
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
 - je dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
--  **brelse** (skretka brelease) uvolnuje vyrovnavaciu pamäť, uvolnuje zamok spanku 
+-  **brelse** (skretka brelease) uvolnuje vyrovnavaciu pamäť, uvolnuje **sleep lock**
 #### Logging layer
 - obnovenie po zlyhani
 - umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
 
 #### Inode layer
-- poskytuje individualne subory, kazdy subor je reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru
+- poskytuje individualne subory, kazdy subor je reprezentovany ako **inode** s unikatnym **i-number** a nejakymi blokmi obsahujucimi data suboru
 - **inode** moze mat 2 vyznamy:
   - moze odkazovat na dátovú štruktúru na disku
   - moze odkazovat na in-memory inode
 - kazdy inode ma jedinecne inumber
 - jadro uchováva množinu aktívnych inodov v pamäti v itable
-- jadro ukladá inode do pamäte iba vtedy, ak existujú ukazovatele C odkazujúce na tento inode
-- pole ref = počet ukazovateľov C odkazujúcich na inode
+- jadro ukladá inode do pamäte iba vtedy, ak existujú C pointre odkazujúce na tento inode
+- pole ref = počet C pointerov odkazujúcich na inode
 - **itable.lock** chráni invariant, že inode je prítomný v tabuľke inodov najviac raz
 - **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
 - **iput** releasnutie pointera na inode(modifikuje ref count)
@@ -806,7 +806,7 @@
 #### Directory layer
 - implementuje kazdy adresar ako specialny typ **inode** ktorych obsahom je postupnost poloziek adresara, pricom kazda obsahuje **meno suboru** a **i-number** (unikatne cislo suboru na disku)
 - jeho inode má typ T_DIR a jeho údaje sú sekvenciou položiek adresára
-- každá jeho položka je struct **dirent**, ktorá obsahuje názov a číslo inódu
+- každá jeho položka je struct **dirent**, ktorá obsahuje názov a číslo inode
 - ma aj funkcie *dirlookup*, *dirlink*, ...
 
 #### Pathname layer
