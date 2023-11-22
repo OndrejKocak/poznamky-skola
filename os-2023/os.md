@@ -784,7 +784,7 @@
 - umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
 
 #### Inode layer
-- poskytuje individualne subory kazdy reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru
+- poskytuje individualne subory, kazdy subor je reprezentovany ako **inode** s unikatnym **i-number** a niektorymi blokmi obsahujucimi data suboru
 - **inode** moze mat 2 vyznamy:
   - moze odkazovat na dátovú štruktúru na disku
   - moze odkazovat na in-memory inode
