@@ -778,7 +778,7 @@
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
 - je dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
-
+-  **brelse** (skretka brelease) uvolnuje vyrovnavaciu pamäť, uvolnuje zamok spanku 
 #### Logging layer
 - obnovenie po zlyhani
 - umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
