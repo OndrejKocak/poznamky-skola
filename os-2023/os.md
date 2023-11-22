@@ -778,7 +778,7 @@
 - sklada sa z 2 casti: **bread** a **bwrite** - prvy ziska buf s kopiou bloku a druhy zapise cache do prislusneho bloku na disku
 - obsahuje aj funkcie *binit*, *bget*, ...
 - je dolezite, aby existovala maximalne 1 vyrovnavacia pamat na kazdy sektor disku aby sa zabezpecilo ze citajuci vidi zapisy a pretoze **FS** pouziva zamky na bufferoch pre synchronizaciu
-
+-  **brelse** (skretka brelease) uvolnuje vyrovnavaciu pamäť, uvolnuje zamok spanku 
 #### Logging layer
 - obnovenie po zlyhani
 - umoznuje vyssim vrstvam zaobalit aktualizaciu viacerych blokov do transakcie a zaistuje ze bloky sa aktualizuju atomicky v pripade zlyhania
@@ -830,7 +830,7 @@
 - os xv6 pouziva bloky velkosti 1KB (2 sektory)
 - disk v xv6 sa sklada z niekolkych blokov: **boot | super | log | inodes | bitmap | data...data**
 ![FS struktura](https://miro.medium.com/v2/resize:fit:1400/1*a6AbidN2wAw9LYfpRGi94A.png)
-- **super** obsahuje program **mkfs** ktory vytvara pociatocny file system
+- **super** je vyhradený pre program **mkfs** ktory vytvara pociatocny file system
 
 #### Block allocator
 - blokovy alokator v Xv6 udržiava voľnú bitmapu na disku s jedným bitom na blok(0 blok je volny, 1 blok sa vyuziva)
@@ -843,5 +843,5 @@
 
 #### Realny svet
 - vyrovnavacia pamat ma v reálnom OS rovnaké účely: ukladanie do vyrovnávacej pamäte a synchronizácia prístupu na disk
-- xv6 je naivný, pokiaľ ide o zlyhania disku: ak operácia disku zlyhá, xv6 spanikári (viac o zlyhaniach v dalsej prednaske)
+- xv6 je naivný, pokiaľ ide o zlyhania disku: ak operácia disku zlyhá, xv6 spanikári
 - xv6 vyžaduje, aby sa súborový systém zmestil na jedno diskové zariadenie a nemenil veľkosť
