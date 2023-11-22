@@ -795,6 +795,7 @@
 - **itable.lock** chráni invariant, že inode je prítomný v tabuľke inodov najviac raz
 - **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
 - **iput** releasnutie pointera na inode(modifikuje ref count)
+- **nlink** pocita pocet poloziek adresara ktore ukazuju na dany inode
 
 #### Obsah inode
 - struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
