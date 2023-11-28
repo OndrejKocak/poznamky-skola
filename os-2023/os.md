@@ -198,7 +198,8 @@
 - mechanizmus ktorym os poskytuje kazdemu procesu vlastny sukromny adresny priestor a pamat
 - urcuju co znamenaju pamatove adresy(memory adresses)
 - ku ktorym castiam fyzickej pamate je mozne pristupovat
-- dava os kontrolu nad prekladmi virtualnych adries na fyzicku 
+- dava os kontrolu nad prekladmi virtualnych adries na fyzicku
+- array of PTEs
 
 #### RISC V
 - instrukcie(user aj kernel) manipuluju s virtualnymi adresami
@@ -796,6 +797,7 @@
 - **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
 - **iput** releasnutie pointera na inode(modifikuje ref count)
 - **nlink** pocita pocet poloziek adresara ktore ukazuju na dany inode
+- **inode** obsahuje metadata o subore
 
 #### Obsah inode
 - struktura inodu na disku je struct dinode - obsahuje veľkosť a pole čísel blokov
@@ -846,3 +848,155 @@
 - vyrovnavacia pamat ma v reálnom OS rovnaké účely: ukladanie do vyrovnávacej pamäte a synchronizácia prístupu na disk
 - xv6 je naivný, pokiaľ ide o zlyhania disku: ak operácia disku zlyhá, xv6 spanikári
 - xv6 vyžaduje, aby sa súborový systém zmestil na jedno diskové zariadenie a nemenil veľkosť
+
+## MMAP Bleskovka
+### kapitola 3.1
+#### xv6
+- umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
+- mapovanie rovnakej pamate(stranky trampoline) v niekolkych adresnych priestoroch
+- strazenie zasobnikov jadra a pouzivatelov pomocou nezmapovanej stranky
+- Sv39 RISC V (pouziva iba spodnych 39 bitov 64-bitovej virtualnej adresy)
+- 2^27 page table entries(PTEs)
+- velkost page table je 4096(2^12) bajtov
+
+#### Tabulky stranok(page tables PT)
+- mechanizmus ktorym os poskytuje kazdemu procesu vlastny sukromny adresny priestor a pamat
+- urcuju co znamenaju pamatove adresy(memory adresses)
+- ku ktorym castiam fyzickej pamate je mozne pristupovat
+- dava os kontrolu nad prekladmi virtualnych adries na fyzicku
+- array of PTEs
+
+#### RISC V
+- instrukcie(user aj kernel) manipuluju s virtualnymi adresami
+- mapuje virtualne adresy na fyzicku adresu
+  
+
+#### Page table entry (PTE)
+- kazde PTE obsahuje 44-bitove cislo fyzickej stranky(PPN) a niektore priznaky
+- priestor na rast 10 bitov
+- kazde PTE obsahuje flag bits ktore informuju strankovaci hardver ako je povolene pouzivat virtualnu adresu
+  - **PTE_V** indikuje ci je PTE je pritomne
+  - **PTE_R** riadi ci mozu instrukcie citat zo stranky
+  - **PTE_W** riadi ci mozu instrukcie zapisovat do stranky
+  - **PTE_X** riadi ci cpu moze interpretovat obsah stranky ako instrukcie a vykonat ich
+  - **PTE_U** riadi ci maju instrukcie(v usermode) pristup ku stranke
+
+
+#### Preklad na fyzicku adresu v troch krokoch
+  - Page table je ulozena vo fyzickej pamati ako troj-urovnovy strom
+    - koren stromu je tabulka stranok s velkostou 4096bajtov
+    - kazda stranka tabulky stranok obsahuje 512 PTE
+    - PTEs obsahuju fyzicke adresy pre stranky tabulky stranko v dalsej urovni stromu
+  - hardver strankovania
+    - hornych 9 bitov z 27 bitov vyber PTE
+    - prostrednych 9 bitov vyber PTE na stranke tabulky stranok
+    - spodnych 9 bitov vyber konecneho PTE
+  - ak niektory z troch PTE pozadovanych na preklad nieje pritomny strankovaci hardver vyvola page-fault exception
+  - nevyhodou je ze CPU musi nacitat 3 PTE z pamate aby vykonal preklad virtualnej adresy v nacitancej/ukladanadacej instrukcii do fyzickej adresy
+  - aby sa predislo nacitavaniu PTE z pamate CPU uklada PTEs do cache Translation Look-aside Buffer(TLB)
+
+### Kapitola 3.6
+
+ #### Process adress space
+ - kazdy proces ma vlastnu page table a ked xv6 prepina medzi procesmi prepina aj page table
+ - xv6 mapuje text programu bez priznaku **PTE_W** aby sa nemohol program prepisat v pamati
+ - xv6 mapuje data bez priznaku **PTE_X** aby sa nemohlol program skocit na adresu dat a zacat executovat na tej adrese
+ - **Stack** je jedna stranka
+ - na detekciu pretecenia user stacku alokovanej stack pamate, xv6 vlozi pod stack zabezpecovaciu stranku kde je priznak **PTE_U** vynunulovany
+ - ak user stack pretecie a proces sa pokusi pouzit adresu pod stackom hardver vyvola **page fault**
+ - ked proces poziada xv6 o viac pamate, xv6 zvacsi heap procesu
+   - najprv kallockom allocuje fyzicku stranku
+   - potom prita PTEs do page table procesu ktora ukazuje na novu fyzicku stranku
+   - nastavi priznaky v tychto PTEs
+-kernel mapuje stranku s kodom trampoliny na vrch uzivatelskeho adresneho priestoru(bez PTE_U) a preto jedna stranka fyzickej pamate je viditelna vo vsetkych adresnych priestoroch, ale moze byt pouzita len kernelom
+
+### Kapitola 4.6
+
+#### Reakcia xv6 na vynimky
+  - v user mode
+    - jadro zabije proces kde chyba nastala
+  - v kernel mode
+    - jadro panikari
+
+#### Copy-on-write (COW) fork
+  - rodic aj dieta mozu zdielat fyzicku pamat vhodnym pouzivanim vhodnych povoleni tabulky stranok a chyb stranok
+  - COW je transparentna (niesu treba zmeny v aplikacii aby z COW benefitovali)
+  - rodič a dieťa budú spočiatku zdieľať všetky fyzické stránky, ale pre každého ich bude mapovať iba na čítanie (s jasným príznakom **PTE_W**)
+  - ak niektory z nich zapise danu stranku risc v vyvola vynimku page fault
+    - Obsluha pasce jadra odpovedá pridelením novej stránky fyzickej pamäte a skopírovaním fyzickej stránky, na ktorú sa mapuje chybná adresa
+    - Jadro zmení príslušné PTE v tabuľke stránok chybujúceho procesu tak, aby ukazovalo na kópiu a umožňovalo zapisovanie aj čítanie
+    - potom obnoví chybný proces podľa inštrukcie, ktorá spôsobila chybu
+    - Pretože PTE umožňuje zápis, opätovne vykonaná inštrukcia sa teraz vykoná bez chyby.
+  - vyžaduje vedenie zanamov, ktoré pomôžu rozhodnúť, kedy môžu byť fyzické stránky uvoľnené, pretože na každú stránku môže odkazovať rôzny počet tabuliek stránok v závislosti od histórie rozvetvení, chýb stránok, execov a výstupov
+  - vedenie zaznamov umoznuje optimalizaciu : ak sa v procese vyskytne **store page fault** a na fyzickú stránku sa odkazuje iba z tabuľky stránok tohto procesu, nie je potrebná žiadna kópia.
+  - COW urychluje fork pretoze nemusi kopirovat pamat(iba ked sa nieco zapise musi kopirovat)
+  
+#### Chyby stranok
+  - **load page fault**(keď inštrukcia načítania nemôže preložiť svoju virtuálnu adresu)
+  - **store page fault**(keď inštrukcia uloženia nemôže preložiť svoju virtuálnu adresu)
+  - **instruction page fault**(keď sa adresa v počítadle programu nemoze prelozit)
+
+  - register **scause** oznacuje typ chyby a **sval** obsahuje adresu ktoru nebolo mozne prelozit
+  - CPU vyvolá výnimku chyby stránky, keď sa pouzije virtualna adresa ktora:
+    - nema ziadne mapovanie v PT
+    - ma mapovanie ktoreho priznak **PTE_V** je prazdny
+    - mapovanie ktoreho bity priznakov **(PTE_R, PTE_W, PTE_X, PTE_U)** zakazuju danu operaciu
+
+#### Lazy alocation
+  -  alokuje pamat az ked ju aplkacia potrebuje
+  -  jadro nemusí robiť vôbec žiadnu prácu pre stránky, ktoré aplikácia nikdy nepoužíva
+  -  ak aplikácia požaduje veľké rozšírenie adresného priestoru, tak sbrk je bez lazy alocation drahý
+  -  umoznuje rozlozit naklady v case
+  -  spôsobuje ďalšiu réžiu chýb stránok, ktoré zahŕňajú prechod medzi kernelom a userom
+     -  **OS** môže znížiť tieto náklady pridelením dávky po sebe nasledujúcich stránok na chybu stránky namiesto jednej stránky a špecializáciou vstupného/výstupného kódu jadra pre takéto chyby stránky 
+
+#### Demand paging
+  - Na zlepšenie času odozvy moderné jadro vytvára tabuľku stránok pre priestor užívateľských adries, ale označuje PTE pre stránky ako neplatné. 
+  - Pri chybe stránky jadro načíta obsah stránky z disku a namapuje ho do priestoru adries používateľa. 
+  - Podobne ako COW fork a lenivá alokácia môže jadro implementovať túto funkciu transparentne do aplikácií.
+
+#### Paging to disk
+  - ak program ktory bezi potrebuje viac pamate ako ma pocitac RAM
+  - Myšlienkou je uložiť iba zlomok používateľských stránok do pamäte RAM a zvyšok uložiť na disk v **paging area**
+  - kernel oznaci priznaky PTE ktore oznacuju pamat ulozenu v **paging** area ako neplatnu
+  - ak sa aplikacia pokusi pouzit stranku ktora bola **paged out** na disk tak sa vyvola **page fault** a stranka musi byt **paged in** do RAM
+    - kernel trap handler alokuje fyzicku stranku pamate RAM
+    - nacita stranku z disku do RAM
+    - upravi prislusny PTE aby ukazoval na RAM
+  - ak je treba nacitat stranku z disku do RAM ale nieje dostatok RAM:
+    - jadro musi najprv uvolnit fyzicku pamat bud pomocou **paging out** alebo ju odlozi do **paging area** na disku a oznaci PTE ukazujuce na tuto pamat za neplatne
+    - odlozenie je drahe takze strankovanie usiluje o to aby ho bolo treba robit co najmanej
+  - dobra refernecna lokalita:
+    - ak aplikácie používajú iba podmnožinu svojich pamäťových stránok a spojenie podmnožín sa zmestí do pamäte RAM
+  - pocitace casto operuju s malou alebo ziadnou volnou fyzickou pamatou(bez ohladu na to kolko je hardverovej RAM)
+
+- Lazy alocation a paging to disk je velmi vyhodne ak je nedostatok volnej pamate
+
+####  automatically extending stacks and memory-mapped files
+  - dalsia funkcionalita ktora kombinuje vynimky strankovania a chyby stranok
+
+#### Terminologia z prednasky:
+  - Exception (výnimka)
+    - výnimočný stav vyvolaný inštrukciou vykonávaného programu
+  - Trap (presun riadenia)
+    -  synchrónny prenos riadenia do kódu obsluhy spôsobený výnimočným stavom, ktorý zapríčinil vykonávaný program
+  - Interrupt (prerušenie)
+    - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
+
+### Kapitola 8.9
+
+#### Code inodes
+- **iget** ziskanie pointera na inode(modifikuje ref count, vrateny pointer je vzdy validny)
+- **iput** releasnutie pointera na inode(modifikuje ref count)
+- **ialloc** sluzi na alokovanie noveho inodu(je podobna balloc)
+- **ilock** kod musi zamknut inode pred citanim alebo zapisovanim jeho metadat alebo obsahu(pouziva sleep lock)
+- **iunlock** releasne sleep lock
+- **itable.lock** chráni invariant, že inode je prítomný v tabuľke inodov najviac raz
+
+### Kapitola 8.13
+#### File descriptor layer
+- abstrahuje mnohe unix resources pomocou **file system** rozhrania, zjednodusuje zivot programatorom aplikacii
+- xv6 dáva každému procesu vlastnú tabuľku otvorených súborov alebo deskriptorov súborov
+- všetky otvorené súbory v systéme sú uložené v globálnej tabuľke súborov **ftable**
+- ftable ma funkcie na pridelenie súboru (*filealloc*), vytvorenie duplicitnej referencie (*filedup*), uvoľnenie referencie (*fileclose*)
+- *filestat*, *fileread* a *filewrite* implementuju *stat*, *read* a *write*
