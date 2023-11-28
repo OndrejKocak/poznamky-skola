@@ -77,6 +77,20 @@
    - [Disky v xv6](os.md#disky)
    - [Block allocator](os.md#block-allocator)
   </details>
+  <details><summary>MMAP</summary>
+
+   - [Uvod](os.md#mmap-bleskovka)
+   - [Kapitola 3.1](os.md#kapitola-31)
+     - [Tabulky stranok](os.md#tabulky-stranokpage-tables-pt-1)
+     - [Page table entry](os.md#page-table-entry-pte-1)
+   - [Kapitola 3.6](os.md#kapitola-36)
+   - [Kapitola 4.6](os.md#kapitola-46-1)
+     - [COW fork](os.md#copy-on-write-cow-fork-1)
+     - [Chyby stranok](os.md#chyby-stranok-1)
+     - [Paging](os.md#demand-paging-1)
+   - [Kapitola 8.9](os.md#kapitola-89)
+   - [Kapitola 8.13](os.md#kapitola-813)
+  </details>
 
 ## Prednaska 1
 
