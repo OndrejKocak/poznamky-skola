@@ -866,9 +866,6 @@
 ## MMAP Bleskovka
 ### kapitola 3.1
 #### xv6
-- umoznuje izolovat adresne priestory roznych procesov a multiplexovat ich do jedinej fyzickej pamate
-- mapovanie rovnakej pamate(stranky trampoline) v niekolkych adresnych priestoroch
-- strazenie zasobnikov jadra a pouzivatelov pomocou nezmapovanej stranky
 - Sv39 RISC V (pouziva iba spodnych 39 bitov 64-bitovej virtualnej adresy)
 - 2^27 page table entries(PTEs)
 - velkost page table je 4096(2^12) bajtov
@@ -914,7 +911,7 @@
  #### Process adress space
  - kazdy proces ma vlastnu page table a ked xv6 prepina medzi procesmi prepina aj page table
  - xv6 mapuje text programu bez priznaku **PTE_W** aby sa nemohol program prepisat v pamati
- - xv6 mapuje data bez priznaku **PTE_X** aby sa nemohlol program skocit na adresu dat a zacat executovat na tej adrese
+ - xv6 mapuje data bez priznaku **PTE_X** aby nemohlol program skocit na adresu dat a zacat executovat na tej adrese
  - **Stack** je jedna stranka
  - na detekciu pretecenia user stacku alokovanej stack pamate, xv6 vlozi pod stack zabezpecovaciu stranku kde je priznak **PTE_U** vynunulovany
  - ak user stack pretecie a proces sa pokusi pouzit adresu pod stackom hardver vyvola **page fault**
