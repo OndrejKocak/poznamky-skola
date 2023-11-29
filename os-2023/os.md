@@ -878,7 +878,7 @@
 - urcuju co znamenaju pamatove adresy(memory adresses)
 - ku ktorym castiam fyzickej pamate je mozne pristupovat
 - dava os kontrolu nad prekladmi virtualnych adries na fyzicku
-- array of PTEs
+- stranka je array of PTEs
 
 #### RISC V
 - instrukcie(user aj kernel) manipuluju s virtualnymi adresami
@@ -988,14 +988,6 @@
 
 ####  automatically extending stacks and memory-mapped files
   - dalsia funkcionalita ktora kombinuje vynimky strankovania a chyby stranok
-
-#### Terminologia z prednasky:
-  - Exception (výnimka)
-    - výnimočný stav vyvolaný inštrukciou vykonávaného programu
-  - Trap (presun riadenia)
-    -  synchrónny prenos riadenia do kódu obsluhy spôsobený výnimočným stavom, ktorý zapríčinil vykonávaný program
-  - Interrupt (prerušenie)
-    - externá udalosť, ktorá sa vyskytne asynchrónne voči vykonávanému kódu
 
 ### Kapitola 8.9
 
