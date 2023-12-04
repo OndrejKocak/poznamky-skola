@@ -906,12 +906,15 @@
   - nevyhodou je ze CPU musi nacitat 3 PTE z pamate aby vykonal preklad virtualnej adresy v nacitancej/ukladanadacej instrukcii do fyzickej adresy
   - aby sa predislo nacitavaniu PTE z pamate CPU uklada PTEs do cache Translation Look-aside Buffer(TLB)
 
+![struktura PT](https://1480285644-files.gitbook.io/~/files/v0/b/gitbook-legacy-files/o/assets%2F-M13JlZNu0b_edmxHTQk%2F-M4buISqmgR04EgVR82a%2F-M4bufr5-ZZ8anm7y3Ry%2Fimage.png?alt=media&token=0518b750-fd1a-47bb-8247-49dd27eba085)
+RISC-V preklad na fyzicku adresu
+
 ### Kapitola 3.6
 
  #### Process adress space
  - kazdy proces ma vlastnu page table a ked xv6 prepina medzi procesmi prepina aj page table
  - xv6 mapuje text programu bez priznaku **PTE_W** aby sa nemohol program prepisat v pamati
- - xv6 mapuje data bez priznaku **PTE_X** aby nemohlol program skocit na adresu dat a zacat executovat na tej adrese
+ - xv6 mapuje data bez priznaku **PTE_X** aby nemohol program skocit na adresu dat a zacat executovat na tej adrese
  - **Stack** je jedna stranka
  - na detekciu pretecenia user stacku alokovanej stack pamate, xv6 vlozi pod stack zabezpecovaciu stranku kde je priznak **PTE_U** vynunulovany
  - ak user stack pretecie a proces sa pokusi pouzit adresu pod stackom hardver vyvola **page fault**
