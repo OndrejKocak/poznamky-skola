@@ -91,6 +91,15 @@
    - [Kapitola 8.9](os.md#kapitola-89)
    - [Kapitola 8.13](os.md#kapitola-813)
   </details>
+  <details><summary>Kapitola 5</summary>
+
+   - [Uvod](os.md#kapitola-5)
+   - [Console input](os.md#console-input)
+   - [Console output](os.md#console-output)
+   - [Konkurencia driver-ov](os.md#concurency-in-drivers)
+   - [Casovac preruseni](os.md#timer-interrupts)
+   - [Realny svet](os.md#realny-svet-1)
+  </details>
 
 ## Prednaska 1
 
@@ -1046,3 +1055,7 @@ RISC-V preklad na fyzicku adresu
 - **I/O concurrency** console driver moze spracovat vstup aj ked ziadny proces necaka na citanie, podobne moze proces poslat vystup bez cakania na zariadenie
 
 #### Concurency in drivers
+
+#### Timer interrupts
+
+#### Realny svet
