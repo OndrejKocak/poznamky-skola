@@ -1003,3 +1003,43 @@
 - všetky otvorené súbory v systéme sú uložené v globálnej tabuľke súborov **ftable**
 - ftable ma funkcie na pridelenie súboru (*filealloc*), vytvorenie duplicitnej referencie (*filedup*), uvoľnenie referencie (*fileclose*)
 - *filestat*, *fileread* a *filewrite* implementuju *stat*, *read* a *write*
+
+## Kapitola 5
+#### Interrupts and device drivers
+- driver je kod v os ktory managuje konkretne zariadenie
+  - konfiguruje hardver
+  - obsluhuje prerusenia ktore vyvola
+  - interaguje s procesmi ktore mozu cakat na I/O zo zariadenia
+- zariadenia ktore potrebuju pozornost os mozu byt konfigurovane aby generovali interupt(kernel rozozna kedy ide o device interupt a zavola interupt handler z driveru o to sa stara devintr)
+- drivery vykonavaju kod v  dvoch kontextoch:
+  - top half vo vlakne jadra procesu(vola sa pomocou syscallu)
+  - bottom half vykonava sa v case prerusenia(drivers interupt handler)
+
+#### Console input
+- console driver prijma znaky zadavane clovekom pomocou UART serioveho portu
+- **shell** pouziva syscall *read* aby prebral znaky z konzoly
+- QEMU simuluje UART hardver
+- QEMU je pripojena na nasu klavesnicu a display
+- softer vidi UART ako set of memory-mapped control registers
+- niektore fyzicke adresy prepajaju RISC-V s UART zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(UART zacina na **0x10000000** alebo **UART0**)
+- **LSR** register obsahuje bity ktore indikuju ci vstupne znaky cakaju az budu precitane softverom
+- **RHR register obsahuje znaky dostupne na citanie
+- Ked sa precita znak UART postupne vymaze znak z internej FIFO cakajucich znakov a vymaze *ready* bit v **LSR** ked je **FIFO** prazdna
+- **consoleinit** inicializuje UART hardver
+- **consoleread** caka az pride vstup(cez interupt) a je ulozny do cons.buf, nakopiruje vstup do userspace a vrati sa do user procesu
+- ak user nezadal cely riadok citajuce procesy spia
+- ked user zada znak UART poziada RISC-V aby vyvolal interupt
+- **uartintr** precita vsetky cakajuce znaky od UART a preda ich **consoleintr**(necaka na znaky pretoze dalsi vstup vyvala prerusenie)
+- **consoleintr** akumuluje vstupne znaky do cons.buf az kym dorazi cely riadok(bakcspace a niektore ine znaky vyhodnocuje specialne)
+  - ked dorazi koniec riadku zobudi **consoleread**
+
+#### console output
+- *write* volany na fd pripojeny na konzolu dorazi do *uartputc*
+- driver zariadenia obsluhuje vystupny bufer aby procesy nemuseli cakat az UART dokonci posielanie
+- **uartputc** pridakazdy znak do buffera(ak je buffer plny tak caka na UART)
+- ked UART dokonci posielanie bajtu vyvola prerusenie *uartintr** ktory zavola *uartstart*
+- **uartstart** overuje ci zariadenie naozaj dokoncilo posielanie a da zariadeniu dalsi znak z buffera
+- ak je do konzoly zapisanych viac bajtov prvy je poslany pomocou uartputc ten vola uartstart a ostatne su poslane pomocou uartstart zavolany cez uartintr
+- **I/O concurrency** console driver moze spracovat vstup aj ked ziadny proces necaka na citanie, podobne moze proces poslat vystup bez cakania na zariadenie
+
+#### Concurency in drivers
