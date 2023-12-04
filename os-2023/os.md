@@ -80,11 +80,16 @@
   <details><summary>MMAP</summary>
 
    - [Uvod](os.md#mmap-bleskovka)
-   - [Console input](os.md#console-input)
-   - [Console output](os.md#console-output)
-   - [Konkurencia u driver-ov](os.md#concurency-in-drivers)
-   - [Casovace preruseni](os.md#timer-interrupts)
-   - [Realny svet](os.md#realny-svet-1)
+   - [Kapitola 3.1](os.md#kapitola-31)
+     - [Tabulky stranok](os.md#tabulky-stranokpage-tables-pt-1)
+     - [Page table entry](os.md#page-table-entry-pte-1)
+   - [Kapitola 3.6](os.md#kapitola-36)
+   - [Kapitola 4.6](os.md#kapitola-46-1)
+     - [COW fork](os.md#copy-on-write-cow-fork-1)
+     - [Chyby stranok](os.md#chyby-stranok-1)
+     - [Paging](os.md#demand-paging-1)
+   - [Kapitola 8.9](os.md#kapitola-89)
+   - [Kapitola 8.13](os.md#kapitola-813)
   </details>
   <details><summary>Kapitola 5</summary>
 
