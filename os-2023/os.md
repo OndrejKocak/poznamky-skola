@@ -1026,7 +1026,7 @@ RISC-V preklad na fyzicku adresu
 - softer vidi UART ako set of memory-mapped control registers
 - niektore fyzicke adresy prepajaju RISC-V s UART zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(UART zacina na **0x10000000** alebo **UART0**)
 - **LSR** register obsahuje bity ktore indikuju ci vstupne znaky cakaju az budu precitane softverom
-- **RHR register obsahuje znaky dostupne na citanie
+- **RHR** register obsahuje znaky dostupne na citanie
 - Ked sa precita znak UART postupne vymaze znak z internej FIFO cakajucich znakov a vymaze *ready* bit v **LSR** ked je **FIFO** prazdna
 - **consoleinit** inicializuje UART hardver
 - **consoleread** caka az pride vstup(cez interupt) a je ulozny do cons.buf, nakopiruje vstup do userspace a vrati sa do user procesu
