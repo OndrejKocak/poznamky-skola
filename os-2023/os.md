@@ -1028,39 +1028,39 @@ RISC-V preklad na fyzicku adresu
   - bottom half vykonava sa v case prerusenia(drivers interupt handler)
 
 #### Console input
-- console driver prijma znaky zadavane clovekom pomocou UART serioveho portu
+- console driver prijma znaky zadavane clovekom pomocou **UART** serioveho portu
 - **shell** pouziva syscall *read* aby prebral znaky z konzoly
-- QEMU simuluje UART hardver
+- QEMU simuluje **UART** hardver
 - QEMU je pripojena na nasu klavesnicu a display
-- softer vidi UART ako set of memory-mapped control registers
-- niektore fyzicke adresy prepajaju RISC-V s UART zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(UART zacina na **0x10000000** alebo **UART0**)
+- softer vidi **UART** ako set of memory-mapped control registers
+- niektore fyzicke adresy prepajaju RISC-V s **UART** zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(**UART** zacina na **0x10000000** alebo ****UART**0**)
 - **LSR** register obsahuje bity ktore indikuju ci vstupne znaky cakaju az budu precitane softverom
 - **RHR** register obsahuje znaky dostupne na citanie
-- Ked sa precita znak UART postupne vymaze znak z internej FIFO cakajucich znakov a vymaze *ready* bit v **LSR** ked je **FIFO** prazdna
-- **consoleinit** inicializuje UART hardver
+- Ked sa precita znak **UART** postupne vymaze znak z internej FIFO cakajucich znakov a vymaze *ready* bit v **LSR** ked je **FIFO** prazdna
+- **consoleinit** inicializuje **UART** hardver
 - **consoleread** caka az pride vstup(cez interupt) a je ulozny do cons.buf, nakopiruje vstup do userspace a vrati sa do user procesu
 - ak user nezadal cely riadok citajuce procesy spia
-- ked user zada znak UART poziada RISC-V aby vyvolal interupt
-- **uartintr** precita vsetky cakajuce znaky od UART a preda ich **consoleintr**(necaka na znaky pretoze dalsi vstup vyvala prerusenie)
-- **consoleintr** akumuluje vstupne znaky do cons.buf az kym dorazi cely riadok(bakcspace a niektore ine znaky vyhodnocuje specialne)
+- ked user zada znak **UART** poziada RISC-V aby vyvolal interupt
+- **uartintr** precita vsetky cakajuce znaky od **UART** a preda ich **consoleintr**(necaka na znaky pretoze dalsi vstup vyvala prerusenie)
+- **consoleintr** akumuluje vstupne znaky do cons.buf az kym dorazi cely riadok(backspace a niektore ine znaky vyhodnocuje specialne)
   - ked dorazi koniec riadku zobudi **consoleread**
 
 #### console output
-- *write* volany na fd pripojeny na konzolu dorazi do *uartputc*
-- driver zariadenia obsluhuje vystupny bufer aby procesy nemuseli cakat az UART dokonci posielanie
-- **uartputc** pridakazdy znak do buffera(ak je buffer plny tak caka na UART)
-- ked UART dokonci posielanie bajtu vyvola prerusenie *uartintr** ktory zavola *uartstart*
-- **uartstart** overuje ci zariadenie naozaj dokoncilo posielanie a da zariadeniu dalsi znak z buffera
-- ak je do konzoly zapisanych viac bajtov prvy je poslany pomocou uartputc ten vola uartstart a ostatne su poslane pomocou uartstart zavolany cez uartintr
+- *write* volany na fd pripojeny na konzolu dorazi do ***uart**putc*
+- driver zariadenia obsluhuje vystupny bufer aby procesy nemuseli cakat az **UART** dokonci posielanie
+- ****uart**putc** pridakazdy znak do buffera(ak je buffer plny tak caka na **UART**)
+- ked **UART** dokonci posielanie bajtu vyvola prerusenie **uartintr** ktory zavola ****uart**start**
+- ****uart**start** overuje ci zariadenie naozaj dokoncilo posielanie a da zariadeniu dalsi znak z buffera
+- ak je do konzoly zapisanych viac bajtov prvy je poslany pomocou **uart**putc ten vola **uart**start a ostatne su poslane pomocou **uart**start zavolany cez **uart**intr
 - **I/O concurrency** console driver moze spracovat vstup aj ked ziadny proces necaka na citanie, podobne moze proces poslat vystup bez cakania na zariadenie
 
 #### Concurency in drivers
-- nastáva pri získanie **consoleread** a **consoleintr**
+- nastáva pri získavani **consoleread** a **consoleintr**
 - preto sú chránené zámkom, ktorý chráni dátové štruktúry ovládača konzoly pred súbežným prístupom
 - môžu nastať tri nebezpečenstvá súbežnosti:
   - dva procesy na rôznych CPU môžu súčasne volať *consoleread*
   - hardvér môže doručiť prerušenie konzoly na inom CPU, kým sa vykonáva *consoleread*
-  - hardvér môže požiadať procesor, aby doručil prerušenie konzoly (naozaj UART), zatiaľ čo tento procesor sa už vykonáva vo vnútri *consoleread*
+  - hardvér môže požiadať procesor, aby doručil prerušenie konzoly (naozaj **UART**), zatiaľ čo tento procesor sa už vykonáva vo vnútri *consoleread*
 
 #### Timer interrupts
 - prerušenia časovača sa používa na prepínanie medzi procesmi viazanými na výpočet; volania *yield* v **usertrap** a **kerneltrap** spôsobujú toto prepínanie
@@ -1070,5 +1070,5 @@ RISC-V preklad na fyzicku adresu
 
 #### Realny svet
 - Prerušenia časovača vynútia prepnutie vlákna (volanie *yield*) z obsluhy prerušenia časovača, a to aj pri spustení v jadre.
-- Ovládač UART získava dáta po bajtoch čítaním riadiacich registrov UART; tento vzor sa nazýva **naprogramované I/O**, pretože pohyb údajov riadi softvér.
-- Ovládač UART skopíruje prichádzajúce dáta najprv do vyrovnávacej pamäte v jadre a potom do užívateľského priestoru.
+- Ovládač **UART** získava dáta po bajtoch čítaním riadiacich registrov **UART**; tento vzor sa nazýva **naprogramované I/O**, pretože pohyb údajov riadi softvér.
+- Ovládač **UART** skopíruje prichádzajúce dáta najprv do vyrovnávacej pamäte v jadre a potom do užívateľského priestoru.
