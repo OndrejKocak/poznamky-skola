@@ -1033,7 +1033,7 @@ RISC-V preklad na fyzicku adresu
 - QEMU simuluje **UART** hardver
 - QEMU je pripojena na nasu klavesnicu a display
 - softer vidi **UART** ako set of memory-mapped control registers
-- niektore fyzicke adresy prepajaju RISC-V s **UART** zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(**UART** zacina na **0x10000000** alebo ****UART**0**)
+- niektore fyzicke adresy prepajaju RISC-V s **UART** zariadenim aby vedel nacitat a ulozit interakcie s hardverom zariadenia(**UART** zacina na **0x10000000** alebo **UART0**)
 - **LSR** register obsahuje bity ktore indikuju ci vstupne znaky cakaju az budu precitane softverom
 - **RHR** register obsahuje znaky dostupne na citanie
 - Ked sa precita znak **UART** postupne vymaze znak z internej FIFO cakajucich znakov a vymaze *ready* bit v **LSR** ked je **FIFO** prazdna
@@ -1046,12 +1046,12 @@ RISC-V preklad na fyzicku adresu
   - ked dorazi koniec riadku zobudi **consoleread**
 
 #### console output
-- *write* volany na fd pripojeny na konzolu dorazi do ***uart**putc*
+- *write* volany na fd konzoly dorazi do *uartputc*
 - driver zariadenia obsluhuje vystupny bufer aby procesy nemuseli cakat az **UART** dokonci posielanie
-- ****uart**putc** pridakazdy znak do buffera(ak je buffer plny tak caka na **UART**)
-- ked **UART** dokonci posielanie bajtu vyvola prerusenie **uartintr** ktory zavola ****uart**start**
-- ****uart**start** overuje ci zariadenie naozaj dokoncilo posielanie a da zariadeniu dalsi znak z buffera
-- ak je do konzoly zapisanych viac bajtov prvy je poslany pomocou **uart**putc ten vola **uart**start a ostatne su poslane pomocou **uart**start zavolany cez **uart**intr
+- **uartputc** pridakazdy znak do buffera(ak je buffer plny tak caka na **UART**)
+- ked **UART** dokonci posielanie bajtu vyvola prerusenie **uartintr** ktory zavola **uartsta**
+- overuje ci zariadenie naozaj dokoncilo posielanie a da zariadeniu dalsi znak z buffera
+- ak je do konzoly zapisanych viac bajtov prvy je poslany pomocou **uart**putc ten vola **uartstart** a ostatne su poslane pomocou **uart**start zavolany cez **uart**intr
 - **I/O concurrency** console driver moze spracovat vstup aj ked ziadny proces necaka na citanie, podobne moze proces poslat vystup bez cakania na zariadenie
 
 #### Concurency in drivers
