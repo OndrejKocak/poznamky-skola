@@ -1055,7 +1055,20 @@ RISC-V preklad na fyzicku adresu
 - **I/O concurrency** console driver moze spracovat vstup aj ked ziadny proces necaka na citanie, podobne moze proces poslat vystup bez cakania na zariadenie
 
 #### Concurency in drivers
+- nastáva pri získanie **consoleread** a **consoleintr**
+- preto sú chránené zámkom, ktorý chráni dátové štruktúry ovládača konzoly pred súbežným prístupom
+- môžu nastať tri nebezpečenstvá súbežnosti:
+  - dva procesy na rôznych CPU môžu súčasne volať *consoleread*
+  - hardvér môže doručiť prerušenie konzoly na inom CPU, kým sa vykonáva *consoleread*
+  - hardvér môže požiadať procesor, aby doručil prerušenie konzoly (naozaj UART), zatiaľ čo tento procesor sa už vykonáva vo vnútri *consoleread*
 
 #### Timer interrupts
+- prerušenia časovača sa používa na prepínanie medzi procesmi viazanými na výpočet; volania *yield* v **usertrap** a **kerneltrap** spôsobujú toto prepínanie
+- prerušenia časovača sa vykonávjú v režime stroja
+- k prerušeniu časovača môže dôjsť kedykoľvek; ráno, na obed aj večer a jadro nedokáže zakázať prerušenia časovača
+- obsluha prerušení časovača v strojovom režime je **timervec**
 
 #### Realny svet
+- Prerušenia časovača vynútia prepnutie vlákna (volanie *yield*) z obsluhy prerušenia časovača, a to aj pri spustení v jadre.
+- Ovládač UART získava dáta po bajtoch čítaním riadiacich registrov UART; tento vzor sa nazýva **naprogramované I/O**, pretože pohyb údajov riadi softvér.
+- Ovládač UART skopíruje prichádzajúce dáta najprv do vyrovnávacej pamäte v jadre a potom do užívateľského priestoru.
